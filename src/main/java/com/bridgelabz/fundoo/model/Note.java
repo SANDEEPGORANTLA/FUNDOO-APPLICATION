@@ -1,6 +1,9 @@
 package com.bridgelabz.fundoo.model;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -15,13 +18,16 @@ public class Note {
 	private boolean trash;
 	private boolean archive;
 	private boolean Pin;
-
+	@DBRef
+	private List<Label> labels;
+	
 	public Note()
 	{
 		
 	}
+	
 	public Note(String noteId, String userId, String title, String description, String createTime, String updateTime,
-			boolean trash, boolean archive, boolean Pin) {
+			boolean trash, boolean archive, boolean pin, List<Label> labels) {
 		super();
 		this.noteId = noteId;
 		this.userId = userId;
@@ -31,7 +37,9 @@ public class Note {
 		this.updateTime = updateTime;
 		this.trash = trash;
 		this.archive = archive;
-		this.Pin = Pin;
+		Pin = pin;
+		this.labels = labels;
+		
 	}
 
 	public String getNoteId() {
@@ -105,12 +113,20 @@ public class Note {
 	public void setPin(boolean Pin) {
 		this.Pin = Pin;
 	}
+	
+	public List<Label> getLabels() {
+		return labels;
+	}
 
+	public void setLabels(List<Label> labels) {
+		this.labels = labels;
+	}
+	
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", userId=" + userId + ", title=" + title + ", description=" + description
 				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", trash=" + trash + ", archive="
-				+ archive + ", Pin=" + Pin + "]";
+				+ archive + ", Pin=" + Pin + ", labels=" + labels + "]";
 	}
-	
+
 }

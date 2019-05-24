@@ -6,10 +6,8 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.fundoo.dto.LabelDto;
 import com.bridgelabz.fundoo.model.Label;
-import com.bridgelabz.fundoo.model.Note;
 import com.bridgelabz.fundoo.model.Response;
 import com.bridgelabz.fundoo.model.User;
 import com.bridgelabz.fundoo.repository.LabelRepositoryInterface;
@@ -26,32 +24,36 @@ public class LabelServiceImpl implements LabelServiceInterface {
 	private ModelMapper modelMapper;
 	@Autowired
 	private UserRepositoryInterface userRepositoryInterface;
+	
 
 //********************************  create  ******************************************************************//
+	
 	@Override
 	public Response create(LabelDto labelDto, String token) {
 		String id = TokenUtility.verifyToken(token);
-		User user = userRepositoryInterface.findById(id).get();
-		Optional<User> user1 = userRepositoryInterface.findByEmailId(user.getEmailId());
-		if (user1.isPresent()) {
+		Optional<User> user = userRepositoryInterface.findByUserId(id);
+		if (user.isPresent()) {
+			//User user1=userRepositoryInterface.findByUserId(id).get();
 			Label label = modelMapper.map(labelDto, Label.class);
 			label.setLabelName(label.getLabelName());
 			label.setCreateTime(Utility.todayDate());
 			label.setUpdateTime(Utility.todayDate());
-			List<Label> labels = user1.get().getLabels();
+			label=labelRepositoryInterface.save(label);
+
+			List<Label> labels = user.get().getLabels();
 			if(!(labels==null))
 			{
 				labels.add(label);
-				user1.get().setLabels(labels);
+				user.get().setLabels(labels);
 			}
 			else
 			{
 				labels=new ArrayList<Label>();
 				labels.add(label);
-				user1.get().setLabels(labels);
+				user.get().setLabels(labels);
 			}
-			userRepositoryInterface.save(user1.get());
-			labelRepositoryInterface.save(label);
+			userRepositoryInterface.save(user.get());
+			
 			Response response = ResponseUtility.getResponse(200, token, "Label is created Sucessfully");
 			return response;
 		}
@@ -59,13 +61,14 @@ public class LabelServiceImpl implements LabelServiceInterface {
 		return response;
 	}
 //******************************* update *********************************************************************//
-	@SuppressWarnings("unused")
+	
 	@Override
 	public Response update(LabelDto labelDto, String token, String labelId) {
 		String id = TokenUtility.verifyToken(token);
 		User user = userRepositoryInterface.findById(id).get();
 		Optional<Label> label = labelRepositoryInterface.findByLabelId(labelId);
 		if (label.isPresent()) {
+		
 			label.get().setLabelName(labelDto.getLabelName());
 			label.get().setUpdateTime(Utility.todayDate());
 			labelRepositoryInterface.save(label.get());
@@ -101,5 +104,4 @@ public class LabelServiceImpl implements LabelServiceInterface {
 	lable=labelRepositoryInterface.findAll();
 	return lable;
 	}
-//************************************************************************************************************//	
 }

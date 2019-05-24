@@ -11,11 +11,14 @@ public class Label {
 	private String labelName;
 	private String createTime;
 	private String updateTime;
+	
 
 	public Label() {
 
 	}
 
+	
+	
 	public Label(String labelId, String userId, String labelName, String createTime, String updateTime) {
 		super();
 		this.labelId = labelId;
@@ -23,7 +26,10 @@ public class Label {
 		this.labelName = labelName;
 		this.createTime = createTime;
 		this.updateTime = updateTime;
+		
 	}
+
+
 
 	public String getLabelId() {
 		return labelId;
@@ -64,7 +70,7 @@ public class Label {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Label [labelId=" + labelId + ", userId=" + userId + ", labelName=" + labelName + ", createTime="

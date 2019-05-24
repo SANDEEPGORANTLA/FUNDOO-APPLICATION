@@ -1,10 +1,12 @@
 package com.bridgelabz.fundoo.services;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.fundoo.dto.UserForgetPasswordDto;
 import com.bridgelabz.fundoo.dto.UserLoginDto;
 import com.bridgelabz.fundoo.dto.UserRegistrationDto;
@@ -28,7 +30,7 @@ public class UserServiceImpl implements UserServiceInterface
 	private EmailSenderUtil emailSenderUtil;
 	@Autowired
 	private EncryptUtil encryptUtil;
-//**************************** registration *******************************************//
+//**************************** registration *******************************************************//
 	public Response register(UserRegistrationDto userRegistrationDto, HttpServletRequest request) 
 	{
 		boolean User = userRepository.findByEmailId(userRegistrationDto.getEmailId()).isPresent();
@@ -50,8 +52,18 @@ public class UserServiceImpl implements UserServiceInterface
 			return response;
 		}
 	}
-//**************************** login **************************************************//
-	public Response login(UserLoginDto userLoginDto) 
+//*************************************************************************************************//
+	private void registerActivationMail(User user, HttpServletRequest request) 
+	{
+		String token = TokenUtility.generateToken(user.getUserId());
+		StringBuffer requestUrl = request.getRequestURL();
+		System.out.println(requestUrl);
+		String url = requestUrl.substring(0, requestUrl.lastIndexOf("/")) + "/activation/" + token;
+		System.out.println(url);
+		emailSenderUtil.mailSender(user.getEmailId(), "user.email.subject", url);
+	}
+//**************************** login **************************************************************//
+	public Response login(UserLoginDto userLoginDto,HttpServletResponse resopnse) 
 	{
 		boolean email = userRepository.findByEmailId(userLoginDto.getEmailId()).isPresent();
 		if (!email) 
@@ -78,7 +90,7 @@ public class UserServiceImpl implements UserServiceInterface
 		Response response = ResponseUtility.getResponse(200, token, "login is Sucessfull");
 		return response;
 	}
-//*************************** forget-password *******************************************
+//*************************** forget-password *****************************************************//
 	public Response forget(UserForgetPasswordDto userForgetPasswordDto, String token) 
 	{
 		boolean forget = userRepository.findByEmailId(userForgetPasswordDto.getEmailId()).isPresent();
@@ -92,17 +104,8 @@ public class UserServiceImpl implements UserServiceInterface
 		Response response = setPassword(userForgetPasswordDto, token);
 		return response;
 	}
-//***************************************************************************************
-	private void registerActivationMail(User user, HttpServletRequest request) 
-	{
-		String token = TokenUtility.generateToken(user.getUserId());
-		StringBuffer requestUrl = request.getRequestURL();
-		System.out.println(requestUrl);
-		String url = requestUrl.substring(0, requestUrl.lastIndexOf("/")) + "/activation/" + token;
-		System.out.println(url);
-		emailSenderUtil.mailSender(user.getEmailId(), "user.email.subject", url);
-	}
-//*****************************validate email *********************************************
+
+//*****************************validate email *****************************************************//
 	public Response validateMail(String token) 
 	{
 		User user = new User();
@@ -120,7 +123,7 @@ public class UserServiceImpl implements UserServiceInterface
 			return response;
 		}
 	}
-//*************************** reset password **********************************************
+//*************************** reset password ******************************************************//
 	public Response setPassword(UserForgetPasswordDto userForgetPasswordDto, String token) 
 	{
 		String id = TokenUtility.verifyToken(token);
@@ -139,6 +142,11 @@ public class UserServiceImpl implements UserServiceInterface
 		Response response = ResponseUtility.getResponse(205, token, "User Password is Successfully Set");
 		return response;
 	}
-//****************************************************************************************
+//*************************************************************************************************//
+	@Override
+	public List<User> getAll()
+	{
+		return userRepository.findAll();
+	}
 	
 }

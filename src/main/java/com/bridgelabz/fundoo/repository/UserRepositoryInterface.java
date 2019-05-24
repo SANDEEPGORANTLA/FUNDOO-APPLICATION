@@ -9,5 +9,6 @@ import com.bridgelabz.fundoo.model.User;
 @Repository
 public interface UserRepositoryInterface extends  MongoRepository<User, String>
 {
-	Optional<User> findByEmailId(String  email);	
+	Optional<User> findByEmailId(String  emailId);
+	Optional<User> findByUserId(String userId);
 }
