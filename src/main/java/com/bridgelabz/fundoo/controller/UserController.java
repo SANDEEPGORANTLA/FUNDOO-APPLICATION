@@ -38,7 +38,7 @@ public class UserController
 	}
 //************************ token-activation ***************************************************************//
 	@GetMapping("/activation/{token}")
-	public ResponseEntity<Response> validatResponse(@PathVariable String token) throws UserException, UnsupportedEncodingException 
+	public ResponseEntity<Response> validatResponse(@RequestHeader String token) throws UserException, UnsupportedEncodingException 
 	{
 		Response response=userServiceImpl.validateMail(token);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);	

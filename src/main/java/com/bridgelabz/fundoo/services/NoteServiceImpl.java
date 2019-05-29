@@ -191,6 +191,7 @@ public class NoteServiceImpl implements NoteServiceInteface {
 		String id=TokenUtility.verifyToken(token);
 		Optional<User> user=userRepositoryInterface.findByUserId(id);
 		Optional<Note> oNote=noteRepositoryInterface.findByNoteId(noteId);
+		
 		Optional<Label> oLabel=labelRepositoryInterface.findByLabelId(labelId);
 		if(user.isPresent() && oNote.isPresent() && oLabel.isPresent())
 		{
@@ -246,7 +247,7 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			List<Label> labels=note.getLabels();
 			if(labels!=null)
 			{
-				if(labels.stream().filter(l->l.getLabelId().equals(label.getLabelId())).findFirst().isPresent())
+				if(labels.stream().filter(g->g.getLabelId().equals(label.getLabelId())).findFirst().isPresent())
 				{
 					Label findLable=labels.stream().filter(l->l.getLabelId().equals(label.getLabelId())).findFirst().get();
 					labels.remove(findLable);

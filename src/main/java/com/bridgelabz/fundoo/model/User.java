@@ -19,6 +19,7 @@ public class User
 	private String UpdateStamp;
 	private boolean isVarified;
 	private String token;
+	private String image;
 	
 	@DBRef
 	private List<Note> notes;
@@ -112,14 +113,6 @@ public class User
 		this.token = token;
 	}
 	
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
-				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
-				+ ", UpdateStamp=" + UpdateStamp + ", isVarified=" + isVarified + ", token=" + token + ", notes="
-				+ notes + ", labels=" + labels + "]";
-	}
-
 	public List<Note> getNotes() {
 		return notes;
 	}
@@ -140,5 +133,22 @@ public class User
 	public void setLabels(List<Label> labels) {
 		this.labels = labels;
 	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+	
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
+				+ ", phoneNumber=" + phoneNumber + ", password=" + password + ", registerStamp=" + registerStamp
+				+ ", UpdateStamp=" + UpdateStamp + ", isVarified=" + isVarified + ", token=" + token + ", image="
+				+ image + ", notes=" + notes + ", labels=" + labels + "]";
+	}
+	
 	
 }
