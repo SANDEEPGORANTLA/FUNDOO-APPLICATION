@@ -3,11 +3,11 @@ package com.bridgelabz.fundoo.controller;
 import java.io.UnsupportedEncodingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo.dto.UserForgetPasswordDto;
 import com.bridgelabz.fundoo.dto.UserLoginDto;
 import com.bridgelabz.fundoo.dto.UserRegistrationDto;
+import com.bridgelabz.fundoo.dto.UserSetPasswordDto;
 import com.bridgelabz.fundoo.model.Response;
 import com.bridgelabz.fundoo.services.UserServiceImpl;
 
 @RestController
 @RequestMapping(value="/user")
+@CrossOrigin(origins="*",allowedHeaders="*",exposedHeaders= {"jwtToken"})
 public class UserController 
 {
 	@Autowired
@@ -51,19 +53,18 @@ public class UserController
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
 //*********************************************************************************************************//
-	@PutMapping("/setPassword/{token}")
-	public ResponseEntity<Response> setPassword(@RequestBody UserForgetPasswordDto userForgetpassword,@PathVariable String token)throws UserException, UnsupportedEncodingException 
+	@PutMapping("/forgotpassword")
+	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword)throws UserException, UnsupportedEncodingException 
 	{
-		Response response=userServiceImpl.setPassword(userForgetpassword, token);
+		Response response = userServiceImpl.forget(userForgetpassword);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
+	
 //************************ forget-password ****************************************************************//	
-	@PutMapping("/forgetpassword")
-	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword,@RequestHeader String token)throws UserException, UnsupportedEncodingException 
+	@PutMapping("/setPassword/{token}")
+	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,@PathVariable String token)throws UserException, UnsupportedEncodingException 
 	{
-		Response response = userServiceImpl.forget(userForgetpassword,token);
+		Response response=userServiceImpl.setPassword(userSetPasswordDto, token);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
-	}
-	
-	
+	}	
 }

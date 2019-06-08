@@ -25,6 +25,7 @@ public class EmailSenderUtil
 			helper.setTo(to);
 			helper.setText(body, true);
 			mailSender.send(msg);
+			System.out.println("sent mail");
 		} 
 		catch (MessagingException|MailException e) 
 		{
