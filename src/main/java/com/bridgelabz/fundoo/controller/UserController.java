@@ -56,14 +56,17 @@ public class UserController
 	@PutMapping("/forgotpassword")
 	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword)throws UserException, UnsupportedEncodingException 
 	{
+		System.out.println("Forgetpassword");
 		Response response = userServiceImpl.forget(userForgetpassword);
+		System.out.println("Response"+response);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
 	
 //************************ forget-password ****************************************************************//	
-	@PutMapping("/setPassword/{token}")
-	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,@PathVariable String token)throws UserException, UnsupportedEncodingException 
+	@PutMapping("/setPassword")
+	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,@RequestHeader String token)throws UserException, UnsupportedEncodingException 
 	{
+		System.out.println("setPassword");
 		Response response=userServiceImpl.setPassword(userSetPasswordDto, token);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}	

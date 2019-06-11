@@ -1,7 +1,6 @@
 package com.bridgelabz.fundoo.services;
 
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
@@ -110,7 +109,7 @@ public class UserServiceImpl implements UserServiceInterface {
 			User user = userRepository.findByEmailId(userForgetPasswordDto.getEmailId()).get();
 			String token = TokenUtility.generateToken(user.getUserId());
 			emailSenderUtil.mailSender(user.getEmailId(), "user.email.subject",
-					"http://localhost:4200/user/setPassword/" + token);
+					"http://localhost:4200/setpassword/"+token);
 			user.setUpdateStamp(Utility.todayDate());
 			userRepository.save(user);
 			response = ResponseUtility.getResponse(400, token, "email id is not valid");

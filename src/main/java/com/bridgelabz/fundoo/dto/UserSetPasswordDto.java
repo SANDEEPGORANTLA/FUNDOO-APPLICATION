@@ -3,7 +3,7 @@ package com.bridgelabz.fundoo.dto;
 public class UserSetPasswordDto 
 {
 	private String password;
-	private String confirmPassword;
+	private String conformPassword;
 
 	public String getpassword() 
 	{
@@ -15,14 +15,14 @@ public class UserSetPasswordDto
 		this.password = password;
 	}
 
-	public String getConfirmPassword() 
+	public String getConformPassword() 
 	{
-		return confirmPassword;
+		return conformPassword;
 	}
 
-	public void setConfirmPassword(String confirmPassword) 
+	public void setConformPassword(String conformPassword) 
 	{
-		this.confirmPassword = confirmPassword;
+		this.conformPassword = conformPassword;
 	}
 
 }
