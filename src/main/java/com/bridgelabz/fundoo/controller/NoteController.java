@@ -2,10 +2,12 @@ package com.bridgelabz.fundoo.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
 import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.bridgelabz.fundoo.dto.NoteDto;
+import com.bridgelabz.fundoo.model.Note;
 import com.bridgelabz.fundoo.model.Response;
 import com.bridgelabz.fundoo.services.NoteServiceImpl;
 
 @RestController
 @RequestMapping(value="/note")
+@CrossOrigin(origins="*", allowedHeaders="*",exposedHeaders= {"jwtToken"})
 public class NoteController {
 	@Autowired
 	private NoteServiceImpl noteServiceImpl;
@@ -52,9 +57,9 @@ public class NoteController {
 //********************************** get-all **************************************************************************************************************//
 	
 	@GetMapping("/retrieve")
-	public List<NoteDto> retrieve(@RequestHeader String token) 
+	public List<Note> retrieve(@RequestHeader String token) 
 	{
-		List<NoteDto> list = noteServiceImpl.retrieve(token);
+		List<Note> list = noteServiceImpl.retrieve(token);
 		return list;
 	}
 //********************************** Archive **************************************************************************************************************//

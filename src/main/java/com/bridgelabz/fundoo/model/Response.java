@@ -24,6 +24,8 @@ public class Response
 		this.statusCode = statusCode;
 		this.token = token;
 	}
+	
+	
 	public int getStatusCode() 
 	{
 		return statusCode;

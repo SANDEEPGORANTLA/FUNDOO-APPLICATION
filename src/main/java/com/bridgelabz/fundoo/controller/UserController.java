@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,9 +55,7 @@ public class UserController
 	@PutMapping("/forgotpassword")
 	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword)throws UserException, UnsupportedEncodingException 
 	{
-		System.out.println("Forgetpassword");
 		Response response = userServiceImpl.forget(userForgetpassword);
-		System.out.println("Response"+response);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
 	
@@ -66,7 +63,6 @@ public class UserController
 	@PutMapping("/setPassword")
 	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,@RequestHeader String token)throws UserException, UnsupportedEncodingException 
 	{
-		System.out.println("setPassword");
 		Response response=userServiceImpl.setPassword(userSetPasswordDto, token);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}	

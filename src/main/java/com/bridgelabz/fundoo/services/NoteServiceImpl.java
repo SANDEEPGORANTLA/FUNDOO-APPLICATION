@@ -3,8 +3,6 @@ package com.bridgelabz.fundoo.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -79,12 +77,12 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			note.get().setDescription(noteDto.getDescription());
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
-			Response response = ResponseUtility.getResponse(205, token, "Note is updated Successfully");
+			Response response = ResponseUtility.getResponse(200, token, "Note is updated Successfully");
 			return response;
 		}
 		else
 		{
-		Response response = ResponseUtility.getResponse(205, token, "Note is not updated");
+		Response response = ResponseUtility.getResponse(200, token, "Note is not updated");
 		return response;
 		}
 	}
@@ -98,25 +96,24 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			note.get().setCreateTime(Utility.todayDate());
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.delete(note.get());
-			Response response = ResponseUtility.getResponse(205, "Note is Deleated Successfully");
+			Response response = ResponseUtility.getResponse(200, "Note is Deleated Successfully");
 			return response;
 		}
 		else
 		{
-		Response response = ResponseUtility.getResponse(205, "Note is not Deleated");
+		Response response = ResponseUtility.getResponse(204, "Note is not Deleated");
 		return response;
 		}
 	}
 
 //******************************   Retrieve   *****************************************************************************//
 	@Override
-	public List<NoteDto> retrieve(String token) {
+	public List<Note> retrieve(String token) {
 		String id = TokenUtility.verifyToken(token);
 		List<Note> note = (List<Note>) noteRepositoryInterface.findByUserId(id);
-		List<NoteDto> listNote = new ArrayList<>();
+		List<Note> listNote = new ArrayList<>();
 		for (Note userNote : note) {
-			NoteDto noteDto = modelMapper.map(userNote, NoteDto.class);
-			System.out.println("notes all created in  sub");
+			Note noteDto = modelMapper.map(userNote, Note.class);
 			listNote.add(noteDto);
 			System.out.println(listNote);
 		}
@@ -137,12 +134,12 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			}
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
-			Response response = ResponseUtility.getResponse(204, token, "Archieve is created Successfully");
+			Response response = ResponseUtility.getResponse(200, token, "Archieve is created Successfully");
 			return response;
 		} 
 		else
 		{
-			Response response = ResponseUtility.getResponse(204, token, "Note does not create Archieve");
+			Response response = ResponseUtility.getResponse(204, token, "Note is not Archieved");
 			return response;
 		}
 	}
@@ -171,7 +168,8 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	public Response Pin(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) {
+		if (note.isPresent()) 
+		{
 			note.get().setPin(true);
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
@@ -209,7 +207,7 @@ public class NoteServiceImpl implements NoteServiceInteface {
 					lables.add(label);
 					note =noteRepositoryInterface.save(note);
 					System.out.println("save lables in note"+note);
-					Response response=ResponseUtility.getResponse(205,"Lables are added to the note");
+					Response response=ResponseUtility.getResponse(201,"Lables are added to the note");
 					return response;
 				}
 			}
@@ -252,7 +250,7 @@ public class NoteServiceImpl implements NoteServiceInteface {
 					Label findLable=labels.stream().filter(l->l.getLabelId().equals(label.getLabelId())).findFirst().get();
 					labels.remove(findLable);
 					noteRepositoryInterface.save(note);
-					Response response=ResponseUtility.getResponse(206,token,"Lable is removed from the Note");
+					Response response=ResponseUtility.getResponse(201,token,"Lable is removed from the Note");
 					return response;
 				}
 			}
@@ -263,11 +261,11 @@ public class NoteServiceImpl implements NoteServiceInteface {
 				note.setLabels(labeld);
 				note = noteRepositoryInterface.save(note);
 				System.out.println("removed lable from note");
-				Response response=ResponseUtility.getResponse(206,token,"Label is removed");
+				Response response=ResponseUtility.getResponse(200,token,"Label is removed");
 				return response;
 			}
 		}
-		Response response=ResponseUtility.getResponse(208,"0","lable is not removed from note due to an error");
+		Response response=ResponseUtility.getResponse(204,"0","lable is not removed from note due to an error");
 		return response;
 	}
 //**************************************************************************************************************************//
