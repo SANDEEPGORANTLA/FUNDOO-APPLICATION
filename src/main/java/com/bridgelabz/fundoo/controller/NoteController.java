@@ -72,7 +72,7 @@ public class NoteController {
 	}
 //********************************** Trash ****************************************************************************************************************//
 	
-	@PostMapping("/trash")
+	@PutMapping("/trash")
 	public ResponseEntity<Response> Trash(@RequestHeader String token, @RequestParam String noteId) throws UserException,UnsupportedEncodingException
 	{
 		Response response = noteServiceImpl.Trash(token, noteId);
