@@ -20,7 +20,8 @@ import com.bridgelabz.fundoo.utility.TokenUtility;
 import com.bridgelabz.fundoo.utility.Utility;
 
 @Service("UserServiceInterface")
-public class UserServiceImpl implements UserServiceInterface {
+public class UserServiceImpl implements UserServiceInterface 
+{
 	@Autowired
 	private UserRepositoryInterface userRepository;
 	@Autowired
@@ -54,7 +55,8 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 //*************************************************************************************************//
-	private void registerActivationMail(User user, HttpServletRequest request) {
+	private void registerActivationMail(User user, HttpServletRequest request) 
+	{
 		String token = TokenUtility.generateToken(user.getUserId());
 		StringBuffer requestUrl = request.getRequestURL();
 		System.out.println(requestUrl);
@@ -64,7 +66,8 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 //**************************** login **************************************************************//
-	public Response login(UserLoginDto userLoginDto, HttpServletResponse resopnse) {
+	public Response login(UserLoginDto userLoginDto, HttpServletResponse resopnse) 
+	{
 		boolean email = userRepository.findByEmailId(userLoginDto.getEmailId()).isPresent();
 		if (!email) 
 		{	
@@ -95,7 +98,8 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 //*************************** forget-password *****************************************************//
-	public Response forget(UserForgetPasswordDto userForgetPasswordDto) {
+	public Response forget(UserForgetPasswordDto userForgetPasswordDto) 
+	{
 		String email = userForgetPasswordDto.getEmailId();
 		boolean forget = userRepository.findByEmailId(email).isPresent();
 		Response response = null;
@@ -118,7 +122,8 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 //*****************************validate email *****************************************************//
-	public Response validateMail(String token) {
+	public Response validateMail(String token) 
+	{
 		User user = new User();
 		String id = TokenUtility.verifyToken(token);
 		boolean check = userRepository.findByEmailId(id).isPresent();
@@ -135,7 +140,8 @@ public class UserServiceImpl implements UserServiceInterface {
 	}
 
 //*************************** reset password ******************************************************//
-	public Response setPassword(UserSetPasswordDto userSetPasswordDto, String token) {
+	public Response setPassword(UserSetPasswordDto userSetPasswordDto, String token) 
+	{
 		String id = TokenUtility.verifyToken(token);
 		User user = userRepository.findById(id).get();
 		String email = user.getEmailId();

@@ -19,5 +19,6 @@ public interface NoteServiceInteface
 	Response Pin(String token, String noteId);
 	Response addLabelsToNote(String token, String noteId, String labelId);
 	Response revomeLabelsFromNote(String token, String noteId, String labelId);
+	List<Note> bin(String token);
 	
 }

@@ -102,4 +102,11 @@ public class NoteController {
 		Response response=noteServiceImpl.revomeLabelsFromNote(token, noteId, labelId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+//************************************bin-all*************************************************************************************************************//
+	@GetMapping("/bin")
+	public List<Note> bin(@RequestHeader String token) 
+	{
+		List<Note> list = noteServiceImpl.bin(token);
+		return list;
+	}
 }

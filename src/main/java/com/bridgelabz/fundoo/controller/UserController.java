@@ -48,6 +48,7 @@ public class UserController
 	@PostMapping("/login")
 	public ResponseEntity<Response> userLogin(@RequestBody UserLoginDto userLoginDto, HttpServletResponse resopnse) 	throws UserException, UnsupportedEncodingException 
 	{
+		System.out.println("UserController.userLogin()::login controller");
 		Response response = userServiceImpl.login(userLoginDto,resopnse);
 		return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}

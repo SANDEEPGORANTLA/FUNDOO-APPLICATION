@@ -1,8 +1,11 @@
 package com.bridgelabz.fundoo.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,7 @@ import com.bridgelabz.fundoo.utility.TokenUtility;
 import com.bridgelabz.fundoo.utility.Utility;
 
 @Service("NoteServiceInteface")
-public class NoteServiceImpl implements NoteServiceInteface 
-{
+public class NoteServiceImpl implements NoteServiceInteface {
 	@Autowired
 	private NoteRepositoryInterface noteRepositoryInterface;
 	@Autowired
@@ -32,39 +34,29 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //********************************* create-note ***************************************************************************//	
 	@Override
-	public Response create(NoteDto noteDto, String token) 
-	{
+	public Response create(NoteDto noteDto, String token) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepositoryInterface.findById(id);
-		if (user.isPresent()) 
-		{
+		if (user.isPresent()) {
 			Note note = modelMapper.map(noteDto, Note.class);
 			note.setUserId(user.get().getUserId());
-			System.out.println(note);
 			note.setCreateTime(Utility.todayDate());
 			note.setUpdateTime(Utility.todayDate());
 			note = noteRepositoryInterface.save(note);
-
 			List<Note> notes = user.get().getNotes();
 			System.err.println(notes);
-			if (!(notes == null)) 
-			{
+			if (!(notes == null)) {
 				notes.add(note);
 				user.get().setNotes(notes);
-			} 
-			else 
-			{
+			} else {
 				notes = new ArrayList<Note>();
 				notes.add(note);
 				user.get().setNotes(notes);
 			}
-
 			userRepositoryInterface.save(user.get());
 			Response response = ResponseUtility.getResponse(200, "Note is created Sucessfully");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(204, "Note is not created");
 			return response;
 		}
@@ -72,21 +64,17 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //******************************** update-note ****************************************************************************//
 	@Override
-	public Response update(NoteDto noteDto, String token, String noteId) 
-	{
+	public Response update(NoteDto noteDto, String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) 
-		{
+		if (note.isPresent()) {
 			note.get().setTitle(noteDto.getTitle());
 			note.get().setDescription(noteDto.getDescription());
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
 			Response response = ResponseUtility.getResponse(200, token, "Note is updated Successfully");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(200, token, "Note is not updated");
 			return response;
 		}
@@ -94,20 +82,23 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //*******************************  delete-note  ***************************************************************************//
 	@Override
-	public Response delete(String token, String noteId) 
-	{
+	public Response delete(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) 
-		{
-			note.get().setCreateTime(Utility.todayDate());
-			note.get().setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.delete(note.get());
+		
+		if (note.isPresent()) {
+			if(note.get().Trash()==true) {
+				noteRepositoryInterface.delete(note.get());
+				//userRepositoryInterface.delete();
+	
+			}
+//			else
+//			{
+//				note.get().setTrash(false);
+//			}
 			Response response = ResponseUtility.getResponse(200, "Note is Deleated Successfully");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(204, "Note is not Deleated");
 			return response;
 		}
@@ -115,16 +106,13 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //******************************   Retrieve   *****************************************************************************//
 	@Override
-	public List<Note> retrieve(String token) 
-	{
+	public List<Note> retrieve(String token) {
 		String id = TokenUtility.verifyToken(token);
 		List<Note> note = (List<Note>) noteRepositoryInterface.findByUserId(id);
 		List<Note> listNote = new ArrayList<>();
-		for (Note userNote : note) 
-		{
+		for (Note userNote : note) {
 			Note noteDto = modelMapper.map(userNote, Note.class);
-			if (noteDto.Trash() == false) 
-			{
+			if (noteDto.Trash() == false) {
 				listNote.add(noteDto);
 				System.out.println(listNote);
 			}
@@ -134,70 +122,68 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //*******************************   Archive    ****************************************************************************//	
 	@Override
-	public Response Archive(String token, String noteId) 
-	{
+	public Response Archive(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) 
-		{
+		if (note.isPresent()) {
 			note.get().setPin(false);
-			if ((note.get().Archive()) == false) 
-			{
+			if ((note.get().Archive()) == false) {
 				note.get().setArchive(true);
-			} 
-			else 
-			{
+			} else {
 				note.get().setArchive(false);
 			}
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
-			Response response = ResponseUtility.getResponse(200, token, "Archieve is created Successfully");
+			Response response = ResponseUtility.getResponse(200, token, "Note Archived");
 			return response;
-		} 
-		else 
-		{
-			Response response = ResponseUtility.getResponse(204, token, "Note is not Archieved");
+		} else {
+			Response response = ResponseUtility.getResponse(204, token, "Note UnArchived");
 			return response;
 		}
 	}
 
 //******************************    Trash    ******************************************************************************//
 	@Override
-	public Response Trash(String token, String noteId) 
-	{
+	public Response Trash(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) 
-		{
-			note.get().setTrash(true);
-			note.get().setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.save(note.get());
-			Response response = ResponseUtility.getResponse(200, token, "Trash is created with in the Note");
-			return response;
-		} 
-		else 
-		{
-			Response response = ResponseUtility.getResponse(204, "0", "Note doesnot created in Trash");
-			return response;
-		}
+		if (note.isPresent()) {
+			
+			if(note.get().Trash()==false) {
+				note.get().setTrash(true);
+LocalDateTime dateTime=LocalDateTime.now();
+note.get().setUpdateTime(String.valueOf(dateTime));
+
+noteRepositoryInterface.save(note.get());
+Response response = ResponseUtility.getResponse(200, token, "Note is Trashed ");
+return response;
+			}
+	
+				
+			}
+		Response response = ResponseUtility.getResponse(200, token, "Note is not Trashed ");
+		return response;
 	}
 
 //******************************    Pin     *******************************************************************************//
 	@Override
-	public Response Pin(String token, String noteId) 
-	{
+	public Response Pin(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) 
-		{
+		if (note.isPresent()) {
+			if(note.get().Pin()== false)
+			{
 			note.get().setPin(true);
+			}
+			else
+			{
+				note.get().setPin(false);
+			}
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
 			Response response = ResponseUtility.getResponse(200, token, "Pin is created with in the Note");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(204, "0", "Note have doesnot Created the Pin");
 			return response;
 		}
@@ -205,36 +191,30 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //****************************** adding-labels****************************************************************************************//
 	@Override
-	public Response addLabelsToNote(String token, String noteId, String labelId) 
-	{
+	public Response addLabelsToNote(String token, String noteId, String labelId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepositoryInterface.findByUserId(id);
 		Optional<Note> oNote = noteRepositoryInterface.findByNoteId(noteId);
 
 		Optional<Label> oLabel = labelRepositoryInterface.findByLabelId(labelId);
-		if (user.isPresent() && oNote.isPresent() && oLabel.isPresent()) 
-		{
+		if (user.isPresent() && oNote.isPresent() && oLabel.isPresent()) {
 			Label label = oLabel.get();
 			Note note = oNote.get();
 			note.setUpdateTime(Utility.todayDate());
 			System.out.println(note);
 			List<Label> lables = note.getLabels();
 			System.err.println(lables);
-			if (lables != null) 
-			{
+			if (lables != null) {
 				Optional<Label> opLable = lables.stream().filter(l -> l.getLabelName().equals(label.getLabelName()))
 						.findFirst();
-				if (!opLable.isPresent()) 
-				{
+				if (!opLable.isPresent()) {
 					lables.add(label);
 					note = noteRepositoryInterface.save(note);
 					System.out.println("save lables in note" + note);
 					Response response = ResponseUtility.getResponse(201, "Lables are added to the note");
 					return response;
 				}
-			} 
-			else 
-			{
+			} else {
 				lables = new ArrayList<Label>();
 				lables.add(label);
 				note.setLabels(lables);
@@ -249,27 +229,19 @@ public class NoteServiceImpl implements NoteServiceInteface
 
 //************************************************************************************************************************************//	
 	@Override
-	public Response revomeLabelsFromNote(String token, String noteId, String labelId) 
-	{
+	public Response revomeLabelsFromNote(String token, String noteId, String labelId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepositoryInterface.findByUserId(id);
-		System.out.println(user);
 		Optional<Note> oNote = noteRepositoryInterface.findByNoteId(noteId);
-		System.out.println(noteId);
-		System.out.println(oNote);
 		Optional<Label> oLabel = labelRepositoryInterface.findByLabelId(labelId);
-		System.out.println(oLabel);
-		if (user.isPresent() && oNote.isPresent() && oLabel.isPresent()) 
-		{
+
+		if (user.isPresent() && oNote.isPresent() && oLabel.isPresent()) {
 			Label label = oLabel.get();
 			Note note = oNote.get();
-			System.err.println(label);
 			note.setUpdateTime(Utility.todayDate());
 			List<Label> labels = note.getLabels();
-			if (labels != null) 
-			{
-				if (labels.stream().filter(g -> g.getLabelId().equals(label.getLabelId())).findFirst().isPresent()) 
-				{
+			if (labels != null) {
+				if (labels.stream().filter(g -> g.getLabelId().equals(label.getLabelId())).findFirst().isPresent()) {
 					Label findLable = labels.stream().filter(l -> l.getLabelId().equals(label.getLabelId())).findFirst()
 							.get();
 					labels.remove(findLable);
@@ -277,14 +249,11 @@ public class NoteServiceImpl implements NoteServiceInteface
 					Response response = ResponseUtility.getResponse(201, token, "Lable is removed from the Note");
 					return response;
 				}
-			} 
-			else 
-			{
+			} else {
 				List<Label> labeld = new ArrayList<Label>();
 				labeld.remove(label);
 				note.setLabels(labeld);
 				note = noteRepositoryInterface.save(note);
-				System.out.println("removed lable from note");
 				Response response = ResponseUtility.getResponse(200, token, "Label is removed");
 				return response;
 			}
@@ -292,5 +261,23 @@ public class NoteServiceImpl implements NoteServiceInteface
 		Response response = ResponseUtility.getResponse(204, "0", "lable is not removed from note due to an error");
 		return response;
 	}
-//**************************************************************************************************************************//
+
+//*********************************** bin notes ************************************************************************************//	
+	@Override
+	public List<Note> bin(String token) {
+		String id = TokenUtility.verifyToken(token);
+		List<Note> note = (List<Note>) noteRepositoryInterface.findByUserId(id);
+//		List<Note> listNote = new ArrayList<>();
+//		for (Note userNote : note) {
+//			Note noteDto = modelMapper.map(userNote, Note.class);
+//			if (noteDto.Trash() == true) {
+//				listNote.add(noteDto);
+//				System.out.println(listNote);
+//			}
+//		}
+//		
+		List<Note> binNote=note.stream().filter(data->(data.Trash()==true)).collect(Collectors.toList());
+		return binNote;
+	}
+
 }

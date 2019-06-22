@@ -28,6 +28,7 @@ public class TokenUtility
 		DecodedJWT decodedJWT = jwtVerifier.verify(token);
 		Claim claim = decodedJWT.getClaim("Happy");
 		id = claim.asString();
+		
 		return id;
 	}
 }
