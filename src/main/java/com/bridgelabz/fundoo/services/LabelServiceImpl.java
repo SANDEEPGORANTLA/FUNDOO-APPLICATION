@@ -33,9 +33,9 @@ public class LabelServiceImpl implements LabelServiceInterface {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepositoryInterface.findByUserId(id);
 		if (user.isPresent()) {
-			//User user1=userRepositoryInterface.findByUserId(id).get();
 			Label label = modelMapper.map(labelDto, Label.class);
-			label.setLabelName(label.getLabelName());
+			label.setUserId(id);
+		//	label.setLabelName(label.getLabelName());
 			label.setCreateTime(Utility.todayDate());
 			label.setUpdateTime(Utility.todayDate());
 			label=labelRepositoryInterface.save(label);
@@ -100,8 +100,9 @@ public class LabelServiceImpl implements LabelServiceInterface {
 	public List<Label> retrive(String token)
 	{
 	String id=TokenUtility.verifyToken(token);
-	List<Label> lable=(List<Label>)labelRepositoryInterface.findByUserId(id);
-	lable=labelRepositoryInterface.findAll();
+	List<Label> lable= labelRepositoryInterface.findByUserId(id);
+	System.out.println(id);	
+	//lable=labelRepositoryInterface.findAll();
 	return lable;
 	}
 }

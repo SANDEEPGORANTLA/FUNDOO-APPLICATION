@@ -11,23 +11,23 @@ public class Label {
 	private String labelName;
 	private String createTime;
 	private String updateTime;
-	
+//	@DBRef
+//	private List<Note> notes;
 
 	public Label() {
 
 	}
+	
+	
 
-	
-	
 	public Label(String labelId, String userId, String labelName, String createTime, String updateTime) {
-		super();
-		this.labelId = labelId;
-		this.userId = userId;
-		this.labelName = labelName;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
-		
-	}
+	super();
+	this.labelId = labelId;
+	this.userId = userId;
+	this.labelName = labelName;
+	this.createTime = createTime;
+	this.updateTime = updateTime;
+}
 
 
 
@@ -70,12 +70,24 @@ public class Label {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Label [labelId=" + labelId + ", userId=" + userId + ", labelName=" + labelName + ", createTime="
 				+ createTime + ", updateTime=" + updateTime + "]";
 	}
+	
+//	public List<Note> getNotes() {
+//		return notes;
+//	}
+//
+//	public void setNotes(List<Note> notes) {
+//		this.notes = notes;
+//	}
+	
+	
+
+	
 
 	
 }

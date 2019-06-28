@@ -20,5 +20,9 @@ public interface NoteServiceInteface
 	Response addLabelsToNote(String token, String noteId, String labelId);
 	Response revomeLabelsFromNote(String token, String noteId, String labelId);
 	List<Note> bin(String token);
+	List<Note> archiveNote(String token);
+	List<Note> pinnedNote(String token);
+	Response addColour(String noteId,String token,String colour);
+	
 	
 }

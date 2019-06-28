@@ -64,7 +64,7 @@ public class NoteController {
 	}
 //********************************** Archive **************************************************************************************************************//
 	
-	@PostMapping("/archive")
+	@PutMapping("/archive")
 	public ResponseEntity<Response> Archive(@RequestHeader String token, @RequestParam String noteId) throws UserException,UnsupportedEncodingException
 	{
 		Response response = noteServiceImpl.Archive(token, noteId);
@@ -81,7 +81,7 @@ public class NoteController {
 
 //*********************************************************************************************************************************************************//
 	
-	@PostMapping("/pin")
+	@DeleteMapping("/pin")
 	public ResponseEntity<Response> Pin(@RequestHeader String token, @RequestParam String noteId)  throws UserException,UnsupportedEncodingException
 	{
 		Response response = noteServiceImpl.Pin(token, noteId);
@@ -109,4 +109,27 @@ public class NoteController {
 		List<Note> list = noteServiceImpl.bin(token);
 		return list;
 	}
+//********************************* archive-all************************************************************************************************************//
+	@GetMapping("/archiveAll")
+	public List<Note> getArchiveNotes(@RequestHeader String token)
+	{
+		List<Note> list=noteServiceImpl.archiveNote(token);
+		return list;
+	}
+//****************************** pin-all ******************************************************************************************************************//	
+	@GetMapping("/pinAll")
+	public List<Note> getPinNotes(@RequestHeader String token)
+	{
+		List<Note> list=noteServiceImpl.pinnedNote(token);
+		return list;
+		
+	}
+//**************************** color **********************************************************************************************************************//
+	@PutMapping("/color")
+	public ResponseEntity<Response>addColour(@RequestParam String noteId,@RequestHeader String token, @RequestBody String color) 
+	{
+	Response response= noteServiceImpl.addColour(noteId, token,color);
+	return new ResponseEntity<Response>(response,HttpStatus.OK);
+	}
+
 }

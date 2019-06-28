@@ -55,7 +55,6 @@ public class ElasticSerachServiceImpl implements ElasticSearchServiceIntrface
 		return objectMapper.convertValue(resultMap, Note.class);
 	}
 //********************** update ***************************************************************//
-	@SuppressWarnings("unchecked")
 	@Override
 	public String upDateNote(Note note) throws Exception 
 	{

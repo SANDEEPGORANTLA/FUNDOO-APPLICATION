@@ -1,6 +1,6 @@
 package com.bridgelabz.fundoo.model;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -19,6 +19,7 @@ public class Note {
 	private boolean trash;
 	private boolean archive;
 	private boolean Pin;
+	private String color;
 	@DBRef
 	private List<Label> labels;
 	
@@ -28,7 +29,7 @@ public class Note {
 	}
 	
 	public Note(String noteId, String userId, String title, String description, String createTime, String updateTime,
-			boolean trash, boolean archive, boolean pin, List<Label> labels) {
+			boolean trash, boolean archive, boolean pin, String color, List<Label> labels) {
 		super();
 		this.noteId = noteId;
 		this.userId = userId;
@@ -39,9 +40,11 @@ public class Note {
 		this.trash = trash;
 		this.archive = archive;
 		Pin = pin;
+		this.color = color;
 		this.labels = labels;
-		
 	}
+
+
 
 	public String getNoteId() {
 		return noteId;
@@ -123,11 +126,34 @@ public class Note {
 		this.labels = labels;
 	}
 	
+	
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public boolean isTrash() {
+		return trash;
+	}
+
+	public boolean isArchive() {
+		return archive;
+	}
+
+	public boolean isPin() {
+		return Pin;
+	}
+
 	@Override
 	public String toString() {
 		return "Note [noteId=" + noteId + ", userId=" + userId + ", title=" + title + ", description=" + description
 				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", trash=" + trash + ", archive="
-				+ archive + ", Pin=" + Pin + ", labels=" + labels + "]";
+				+ archive + ", Pin=" + Pin + ", color=" + color + ", labels=" + labels + "]";
 	}
+
+	
 
 }

@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FundooNoteApplication {
 
 	public static void main(String[] args) {
-		System.out.println("                                            "+"WelCome to Spring");		
-		System.err.println("                                      "+"WelCome to FundooApplication");
 		SpringApplication.run(FundooNoteApplication.class, args);
 	}
 

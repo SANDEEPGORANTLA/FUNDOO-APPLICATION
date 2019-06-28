@@ -44,7 +44,6 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			note.setUpdateTime(Utility.todayDate());
 			note = noteRepositoryInterface.save(note);
 			List<Note> notes = user.get().getNotes();
-			System.err.println(notes);
 			if (!(notes == null)) {
 				notes.add(note);
 				user.get().setNotes(notes);
@@ -85,17 +84,11 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	public Response delete(String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		
+
 		if (note.isPresent()) {
-			if(note.get().Trash()==true) {
+			if (note.get().Trash() == true) {
 				noteRepositoryInterface.delete(note.get());
-				//userRepositoryInterface.delete();
-	
 			}
-//			else
-//			{
-//				note.get().setTrash(false);
-//			}
 			Response response = ResponseUtility.getResponse(200, "Note is Deleated Successfully");
 			return response;
 		} else {
@@ -112,9 +105,8 @@ public class NoteServiceImpl implements NoteServiceInteface {
 		List<Note> listNote = new ArrayList<>();
 		for (Note userNote : note) {
 			Note noteDto = modelMapper.map(userNote, Note.class);
-			if (noteDto.Trash() == false) {
+			if (noteDto.Trash() == false && noteDto.Archive() == false) {
 				listNote.add(noteDto);
-				System.out.println(listNote);
 			}
 		}
 		return listNote;
@@ -126,7 +118,6 @@ public class NoteServiceImpl implements NoteServiceInteface {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
-			note.get().setPin(false);
 			if ((note.get().Archive()) == false) {
 				note.get().setArchive(true);
 			} else {
@@ -148,20 +139,27 @@ public class NoteServiceImpl implements NoteServiceInteface {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
-			
-			if(note.get().Trash()==false) {
+			if (note.get().Trash() == false) {
 				note.get().setTrash(true);
-LocalDateTime dateTime=LocalDateTime.now();
-note.get().setUpdateTime(String.valueOf(dateTime));
+				LocalDateTime dateTime = LocalDateTime.now();
+				note.get().setUpdateTime(String.valueOf(dateTime));
 
-noteRepositoryInterface.save(note.get());
-Response response = ResponseUtility.getResponse(200, token, "Note is Trashed ");
-return response;
+				noteRepositoryInterface.save(note.get());
+				Response response = ResponseUtility.getResponse(200, token, "Note is Trashed ");
+				return response;
 			}
-	
-				
+			else {
+				note.get().setTrash(false);
+				LocalDateTime dateTime = LocalDateTime.now();
+				note.get().setUpdateTime(String.valueOf(dateTime));
+
+				noteRepositoryInterface.save(note.get());
+				Response response = ResponseUtility.getResponse(200, token, "Note is restored ");
+				return response;
 			}
-		Response response = ResponseUtility.getResponse(200, token, "Note is not Trashed ");
+
+		}
+		Response response = ResponseUtility.getResponse(204, token, "Note is not Trashed ");
 		return response;
 	}
 
@@ -171,20 +169,17 @@ return response;
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
-			if(note.get().Pin()== false)
-			{
-			note.get().setPin(true);
-			}
-			else
-			{
+			if (note.get().Pin() == false) {
+				note.get().setPin(true);
+			} else {
 				note.get().setPin(false);
 			}
 			note.get().setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note.get());
-			Response response = ResponseUtility.getResponse(200, token, "Pin is created with in the Note");
+			Response response = ResponseUtility.getResponse(200, token, "Note is pinned");
 			return response;
 		} else {
-			Response response = ResponseUtility.getResponse(204, "0", "Note have doesnot Created the Pin");
+			Response response = ResponseUtility.getResponse(204, token, "Note is Unpinned");
 			return response;
 		}
 	}
@@ -250,9 +245,9 @@ return response;
 					return response;
 				}
 			} else {
-				List<Label> labeld = new ArrayList<Label>();
-				labeld.remove(label);
-				note.setLabels(labeld);
+				List<Label> labeId = new ArrayList<Label>();
+				labeId.remove(label);
+				note.setLabels(labeId);
 				note = noteRepositoryInterface.save(note);
 				Response response = ResponseUtility.getResponse(200, token, "Label is removed");
 				return response;
@@ -267,17 +262,49 @@ return response;
 	public List<Note> bin(String token) {
 		String id = TokenUtility.verifyToken(token);
 		List<Note> note = (List<Note>) noteRepositoryInterface.findByUserId(id);
-//		List<Note> listNote = new ArrayList<>();
-//		for (Note userNote : note) {
-//			Note noteDto = modelMapper.map(userNote, Note.class);
-//			if (noteDto.Trash() == true) {
-//				listNote.add(noteDto);
-//				System.out.println(listNote);
-//			}
-//		}
-//		
-		List<Note> binNote=note.stream().filter(data->(data.Trash()==true)).collect(Collectors.toList());
+		List<Note> binNote = note.stream().filter(data -> (data.Trash() == true)).collect(Collectors.toList());
 		return binNote;
+	}
+
+//********************************** archive notes ********************************************************************************//
+	@Override
+	public List<Note> archiveNote(String token) {
+		String id = TokenUtility.verifyToken(token);
+
+		List<Note> list = (List<Note>) noteRepositoryInterface.findByUserId(id);
+		List<Note> archiveNotes = list.stream().filter(data -> (data.Archive() == true)).collect(Collectors.toList());
+		return archiveNotes;
+
+	}
+
+//********************************* pinned notes **********************************************************************************//
+	@Override
+	public List<Note> pinnedNote(String token) {
+		String id = TokenUtility.verifyToken(token);
+		List<Note> pin = (List<Note>) noteRepositoryInterface.findByUserId(id);
+		List<Note> pinNote = pin.stream().filter(data -> (data.Pin() == true)).collect(Collectors.toList());
+		return pinNote;
+	}
+
+//******************************** color *****************************************************************************************//
+	@Override
+	public Response addColour(String noteId, String token, String color) {
+		String id = TokenUtility.verifyToken(token);
+		Optional<Note> optNote = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
+		if (optNote.isPresent()) 
+		{
+			Note note = optNote.get();
+			note.setColor(color);
+			note.setUpdateTime(Utility.todayDate());
+			noteRepositoryInterface.save(note);
+			Response response = ResponseUtility.getResponse(200,token,"color is Set");
+			return response;
+		} 
+		else 
+		{
+			Response response = ResponseUtility.getResponse(204,token,"color is removed");
+			return response;
+		}
 	}
 
 }

@@ -17,32 +17,32 @@ import com.bridgelabz.fundoo.services.ElasticSearchServiceIntrface;
 public class ElasticController 
 {
 	@Autowired(required = true)
-	private ElasticSearchServiceIntrface elastricSearchServiceInterface;
+	private ElasticSearchServiceIntrface esServiceInterface;
 	
 //************************************* create ************************************************//	
 	@PostMapping("/create")
 	public String createNote(@RequestBody Note note) throws IOException 
 	{
-		return elastricSearchServiceInterface.createNote(note);
+		return esServiceInterface.createNote(note);
 	}
 //************************************* delete ************************************************//
 	@DeleteMapping("/delete")
 	public String deleteNote(@RequestParam(value = "id") String id) throws Exception 
 	{
-		return elastricSearchServiceInterface.deleteNote(id);
+		return esServiceInterface.deleteNote(id);
 	}
 //************************************* find-by-id ************************************************//
 	@PostMapping("/find")
 	public Note findById(@RequestParam(value="id") String id) throws Exception 
 	{
-		return elastricSearchServiceInterface.findById(id);
+		return esServiceInterface.findById(id);
 	}
 
 //************************************* update ************************************************//
 	@PutMapping("/update")
 	public String updateNote(@RequestBody Note note) throws Exception
 	{
-		return elastricSearchServiceInterface.upDateNote(note);
+		return esServiceInterface.upDateNote(note);
 	}
 
 }
