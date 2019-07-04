@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,8 +146,7 @@ public class NoteServiceImpl implements NoteServiceInteface {
 				noteRepositoryInterface.save(note.get());
 				Response response = ResponseUtility.getResponse(200, token, "Note is Trashed ");
 				return response;
-			}
-			else {
+			} else {
 				note.get().setTrash(false);
 				LocalDateTime dateTime = LocalDateTime.now();
 				note.get().setUpdateTime(String.valueOf(dateTime));
@@ -196,16 +194,13 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			Label label = oLabel.get();
 			Note note = oNote.get();
 			note.setUpdateTime(Utility.todayDate());
-			System.out.println(note);
 			List<Label> lables = note.getLabels();
-			System.err.println(lables);
 			if (lables != null) {
 				Optional<Label> opLable = lables.stream().filter(l -> l.getLabelName().equals(label.getLabelName()))
 						.findFirst();
 				if (!opLable.isPresent()) {
 					lables.add(label);
 					note = noteRepositoryInterface.save(note);
-					System.out.println("save lables in note" + note);
 					Response response = ResponseUtility.getResponse(201, "Lables are added to the note");
 					return response;
 				}
@@ -291,19 +286,33 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	public Response addColour(String noteId, String token, String color) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> optNote = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (optNote.isPresent()) 
-		{
+		if (optNote.isPresent()) {
 			Note note = optNote.get();
 			note.setColor(color);
 			note.setUpdateTime(Utility.todayDate());
 			noteRepositoryInterface.save(note);
-			Response response = ResponseUtility.getResponse(200,token,"color is Set");
+			Response response = ResponseUtility.getResponse(200, token, "color is Set");
 			return response;
+		} else {
+			Response response = ResponseUtility.getResponse(204, token, "color is removed");
+			return response;
+		}
+	}
+
+//******************************************************************************************************************//
+	public List<Label> getLabelsFromNote(String noteId, String token)
+
+	{
+		String id = TokenUtility.verifyToken(token);
+		Note note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id).get();
+		if (note.getLabels() != null) 
+		{
+			List<Label> labels = note.getLabels().stream().collect(Collectors.toList());
+			return labels;
 		} 
 		else 
 		{
-			Response response = ResponseUtility.getResponse(204,token,"color is removed");
-			return response;
+			return null;
 		}
 	}
 

@@ -3,6 +3,8 @@ package com.bridgelabz.fundoo.services;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
@@ -115,6 +117,26 @@ public class AmazonClient
 			return response;
 		}
 	}
+	public URL getPropic(String token) {
+	String id=TokenUtility.verifyToken(token);
+	boolean isUser=userRepositoryInterface.findById(id).isPresent();
+	if(!isUser) {
+	// response.sendResponse(204,"profilePic is retrived successfully","");
+	// return response;
+	System.out.println("propic retrival failed");
+	}
+	// User user=new User();
+	User user=userRepositoryInterface.findById(id).get();
+	String image=user.getImage();
+	URL url=null;
+	try {
+	url=new URL(image);
+	} catch (MalformedURLException e) {
+	e.printStackTrace();
+	}
+	return url;
+	}
+
 }
 
 

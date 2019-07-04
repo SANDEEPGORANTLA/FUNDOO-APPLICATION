@@ -20,6 +20,7 @@ public class Note {
 	private boolean archive;
 	private boolean Pin;
 	private String color;
+
 	@DBRef
 	private List<Label> labels;
 	

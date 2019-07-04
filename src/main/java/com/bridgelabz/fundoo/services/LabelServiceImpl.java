@@ -35,7 +35,6 @@ public class LabelServiceImpl implements LabelServiceInterface {
 		if (user.isPresent()) {
 			Label label = modelMapper.map(labelDto, Label.class);
 			label.setUserId(id);
-		//	label.setLabelName(label.getLabelName());
 			label.setCreateTime(Utility.todayDate());
 			label.setUpdateTime(Utility.todayDate());
 			label=labelRepositoryInterface.save(label);

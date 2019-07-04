@@ -3,6 +3,7 @@ package com.bridgelabz.fundoo.services;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo.dto.NoteDto;
+import com.bridgelabz.fundoo.model.Label;
 import com.bridgelabz.fundoo.model.Note;
 import com.bridgelabz.fundoo.model.Response;
 
@@ -23,6 +24,6 @@ public interface NoteServiceInteface
 	List<Note> archiveNote(String token);
 	List<Note> pinnedNote(String token);
 	Response addColour(String noteId,String token,String colour);
-	
+	List<Label> getLabelsFromNote(String noteId, String token);
 	
 }
