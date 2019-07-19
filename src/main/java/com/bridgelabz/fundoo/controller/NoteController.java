@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoo.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import org.omg.CORBA.UserException;
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo.dto.NoteDto;
 import com.bridgelabz.fundoo.model.Label;
 import com.bridgelabz.fundoo.model.Note;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
+import com.bridgelabz.fundoo.services.ElasticSearchServiceIntrface;
 import com.bridgelabz.fundoo.services.NoteServiceInteface;
 
 @RestController
@@ -29,6 +31,10 @@ public class NoteController {
 	@Autowired
 	private NoteServiceInteface iNoteService;
 
+	@Autowired
+	private ElasticSearchServiceIntrface esServiceInterface;
+	
+	
 //********************************** create ***************************************************************************************************************//
 	
 	@PostMapping("/create")
@@ -38,6 +44,13 @@ public class NoteController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 //********************************** update ***************************************************************************************************************//
+	
+	
+	@GetMapping("/searchString")
+	public List<Note> searchNoteByText(@RequestParam String findString,@RequestHeader String token) throws IOException
+	{
+		return esServiceInterface.searchNoteByText(findString, token);
+	}
 	
 	@PutMapping("/update")
 	public ResponseEntity<Response> update(@RequestBody NoteDto noteDto, @RequestHeader String token, @RequestParam String noteId) throws UserException,UnsupportedEncodingException
@@ -55,7 +68,7 @@ public class NoteController {
 	}
 //********************************** get-all **************************************************************************************************************//
 	
-	@GetMapping("/retrieve")
+	@GetMapping("/retrieveAll")
 	public List<Note> retrieve(@RequestHeader String token) 
 	{
 		List<Note> list = iNoteService.retrieve(token);
@@ -97,7 +110,7 @@ public class NoteController {
 	}
 //********************************************************************************************************************************************************//	
 	@PutMapping("/revomeLabels")
-	public ResponseEntity<Response> revomeLabels(@RequestHeader String token,@RequestParam String noteId,@RequestHeader String labelId)
+	public ResponseEntity<Response> revomeLabels(@RequestHeader String token,@RequestParam String noteId,@RequestParam String labelId)
 	{
 		Response response=iNoteService.revomeLabelsFromNote(token, noteId, labelId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);

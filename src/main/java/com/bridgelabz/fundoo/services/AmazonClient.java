@@ -19,7 +19,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.model.User;
 import com.bridgelabz.fundoo.repository.UserRepositoryInterface;
 import com.bridgelabz.fundoo.utility.ResponseUtility;
@@ -84,7 +84,7 @@ public class AmazonClient
 			String fileUrl = "";
 			File file = convertMultiPartToFIle(multipart);
 			String fileName = generateFileName(multipart);
-			fileUrl = endPointUrl + "/" + bucketName + "/" + fileName;
+			fileUrl = "https://"+ bucketName + ".s3.ap-south-1.amazonaws.com/" + fileName;
 			uploadFileToS3Bucket(fileName, file);
 			file.delete();
 			user.setImage(fileUrl);

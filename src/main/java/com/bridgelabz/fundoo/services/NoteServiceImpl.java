@@ -1,5 +1,6 @@
 package com.bridgelabz.fundoo.services;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo.dto.NoteDto;
 import com.bridgelabz.fundoo.model.Label;
 import com.bridgelabz.fundoo.model.Note;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.model.User;
 import com.bridgelabz.fundoo.repository.LabelRepositoryInterface;
 import com.bridgelabz.fundoo.repository.NoteRepositoryInterface;
@@ -30,31 +31,34 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	private ModelMapper modelMapper;
 	@Autowired
 	private UserRepositoryInterface userRepositoryInterface;
+	@Autowired
+	private ElasticSearchServiceIntrface elasticSearchServiceIntrface;
 
 //********************************* create-note ***************************************************************************//	
 	@Override
 	public Response create(NoteDto noteDto, String token) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepositoryInterface.findById(id);
-		if (user.isPresent()) {
+		if (user.isPresent()) 
+		{
 			Note note = modelMapper.map(noteDto, Note.class);
 			note.setUserId(user.get().getUserId());
 			note.setCreateTime(Utility.todayDate());
 			note.setUpdateTime(Utility.todayDate());
-			note = noteRepositoryInterface.save(note);
-			List<Note> notes = user.get().getNotes();
-			if (!(notes == null)) {
-				notes.add(note);
-				user.get().setNotes(notes);
-			} else {
-				notes = new ArrayList<Note>();
-				notes.add(note);
-				user.get().setNotes(notes);
+			Note notes = noteRepositoryInterface.save(note);
+			try 
+			{
+				elasticSearchServiceIntrface.createNote(notes);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
 			}
-			userRepositoryInterface.save(user.get());
 			Response response = ResponseUtility.getResponse(200, "Note is created Sucessfully");
 			return response;
-		} else {
+		} 
+		else 
+		{
 			Response response = ResponseUtility.getResponse(204, "Note is not created");
 			return response;
 		}
@@ -64,15 +68,26 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	@Override
 	public Response update(NoteDto noteDto, String token, String noteId) {
 		String id = TokenUtility.verifyToken(token);
-		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) {
-			note.get().setTitle(noteDto.getTitle());
-			note.get().setDescription(noteDto.getDescription());
-			note.get().setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.save(note.get());
+		Optional<Note> noteOptional = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
+		if (noteOptional.isPresent()) {
+			Note note = noteOptional.get();
+			note.setTitle(noteDto.getTitle());
+			note.setDescription(noteDto.getDescription());
+			note.setUpdateTime(Utility.todayDate());
+			noteRepositoryInterface.save(note);
+			try 
+			{
+				elasticSearchServiceIntrface.upDateNote(note);
+			} 
+			catch (Exception e) 
+			{
+				e.printStackTrace();
+			}
 			Response response = ResponseUtility.getResponse(200, token, "Note is updated Successfully");
 			return response;
-		} else {
+		} 
+		else 
+		{
 			Response response = ResponseUtility.getResponse(200, token, "Note is not updated");
 			return response;
 		}
@@ -87,6 +102,12 @@ public class NoteServiceImpl implements NoteServiceInteface {
 		if (note.isPresent()) {
 			if (note.get().Trash() == true) {
 				noteRepositoryInterface.delete(note.get());
+				try {
+					elasticSearchServiceIntrface.deleteNote(noteId);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			Response response = ResponseUtility.getResponse(200, "Note is Deleated Successfully");
 			return response;
@@ -113,20 +134,35 @@ public class NoteServiceImpl implements NoteServiceInteface {
 
 //*******************************   Archive    ****************************************************************************//	
 	@Override
-	public Response Archive(String token, String noteId) {
+	public Response Archive(String token, String noteId) 
+	{
 		String id = TokenUtility.verifyToken(token);
-		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) {
-			if ((note.get().Archive()) == false) {
-				note.get().setArchive(true);
-			} else {
-				note.get().setArchive(false);
+		Optional<Note> noteOptional = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
+		if (noteOptional.isPresent()) 
+		{
+			if ((noteOptional.get().Archive()) == false) 
+			{
+				noteOptional.get().setArchive(true);
+			} 
+			else 
+			{
+				noteOptional.get().setArchive(false);
 			}
-			note.get().setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.save(note.get());
+			noteOptional.get().setUpdateTime(Utility.todayDate());
+			Note notes = noteRepositoryInterface.save(noteOptional.get());
+			try 
+			{
+				elasticSearchServiceIntrface.createNote(notes);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			Response response = ResponseUtility.getResponse(200, token, "Note Archived");
 			return response;
-		} else {
+		} 
+		else 
+		{
 			Response response = ResponseUtility.getResponse(204, token, "Note UnArchived");
 			return response;
 		}
@@ -134,28 +170,30 @@ public class NoteServiceImpl implements NoteServiceInteface {
 
 //******************************    Trash    ******************************************************************************//
 	@Override
-	public Response Trash(String token, String noteId) {
+	public Response Trash(String token, String noteId) 
+	{
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) {
-			if (note.get().Trash() == false) {
+		if (note.isPresent()) 
+		{
+			if (note.get().Trash() == false) 
+			{
 				note.get().setTrash(true);
 				LocalDateTime dateTime = LocalDateTime.now();
 				note.get().setUpdateTime(String.valueOf(dateTime));
-
 				noteRepositoryInterface.save(note.get());
 				Response response = ResponseUtility.getResponse(200, token, "Note is Trashed ");
 				return response;
-			} else {
+			} 
+			else 
+			{
 				note.get().setTrash(false);
 				LocalDateTime dateTime = LocalDateTime.now();
 				note.get().setUpdateTime(String.valueOf(dateTime));
-
 				noteRepositoryInterface.save(note.get());
 				Response response = ResponseUtility.getResponse(200, token, "Note is restored ");
 				return response;
 			}
-
 		}
 		Response response = ResponseUtility.getResponse(204, token, "Note is not Trashed ");
 		return response;
@@ -163,17 +201,31 @@ public class NoteServiceImpl implements NoteServiceInteface {
 
 //******************************    Pin     *******************************************************************************//
 	@Override
-	public Response Pin(String token, String noteId) {
+	public Response Pin(String token, String noteId) 
+	{
 		String id = TokenUtility.verifyToken(token);
 		Optional<Note> note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id);
-		if (note.isPresent()) {
-			if (note.get().Pin() == false) {
+		if (note.isPresent()) 
+		{
+			if (note.get().Pin() == false) 
+			{
 				note.get().setPin(true);
-			} else {
+			} 
+			else 
+			{
 				note.get().setPin(false);
 			}
 			note.get().setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.save(note.get());
+			Note notes=noteRepositoryInterface.save(note.get());
+			try 
+			{
+				elasticSearchServiceIntrface.createNote(notes);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			
 			Response response = ResponseUtility.getResponse(200, token, "Note is pinned");
 			return response;
 		} else {
@@ -290,7 +342,13 @@ public class NoteServiceImpl implements NoteServiceInteface {
 			Note note = optNote.get();
 			note.setColor(color);
 			note.setUpdateTime(Utility.todayDate());
-			noteRepositoryInterface.save(note);
+			Note notes=noteRepositoryInterface.save(note);
+			try {
+				elasticSearchServiceIntrface.createNote(notes);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Response response = ResponseUtility.getResponse(200, token, "color is Set");
 			return response;
 		} else {
@@ -305,13 +363,10 @@ public class NoteServiceImpl implements NoteServiceInteface {
 	{
 		String id = TokenUtility.verifyToken(token);
 		Note note = noteRepositoryInterface.findByNoteIdAndUserId(noteId, id).get();
-		if (note.getLabels() != null) 
-		{
+		if (note.getLabels() != null) {
 			List<Label> labels = note.getLabels().stream().collect(Collectors.toList());
 			return labels;
-		} 
-		else 
-		{
+		} else {
 			return null;
 		}
 	}

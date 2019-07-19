@@ -27,7 +27,7 @@ public class ApplactionConfigure
 	@Bean(destroyMethod = "close")
 	  public RestHighLevelClient client() 
 	  {
-	      RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost",9200,"http")));
+	      RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost",9200,"http")).setMaxRetryTimeoutMillis(90000000));
 	      return client;
 
 	  }

@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo.dto.LabelDto;
 import com.bridgelabz.fundoo.model.Label;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.model.User;
 import com.bridgelabz.fundoo.repository.LabelRepositoryInterface;
 import com.bridgelabz.fundoo.repository.UserRepositoryInterface;

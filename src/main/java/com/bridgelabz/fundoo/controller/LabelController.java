@@ -2,7 +2,6 @@ package com.bridgelabz.fundoo.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-
 import org.omg.CORBA.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.bridgelabz.fundoo.dto.LabelDto;
 import com.bridgelabz.fundoo.model.Label;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.services.LabelServiceImpl;
 
 @RestController

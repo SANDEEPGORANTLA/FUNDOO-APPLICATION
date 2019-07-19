@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.fundoo.dto.NoteDto;
 import com.bridgelabz.fundoo.model.Label;
 import com.bridgelabz.fundoo.model.Note;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 
 @Service
 public interface NoteServiceInteface 

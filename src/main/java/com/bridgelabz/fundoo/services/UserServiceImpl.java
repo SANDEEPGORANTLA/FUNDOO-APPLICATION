@@ -10,7 +10,7 @@ import com.bridgelabz.fundoo.dto.UserForgetPasswordDto;
 import com.bridgelabz.fundoo.dto.UserLoginDto;
 import com.bridgelabz.fundoo.dto.UserRegistrationDto;
 import com.bridgelabz.fundoo.dto.UserSetPasswordDto;
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.model.User;
 import com.bridgelabz.fundoo.repository.UserRepositoryInterface;
 import com.bridgelabz.fundoo.utility.EmailSenderUtil;

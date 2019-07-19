@@ -2,7 +2,6 @@ package com.bridgelabz.fundoo.controller;
 
 import java.io.IOException;
 import java.net.URL;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.services.AmazonClient;
-import com.bridgelabz.fundoo.utility.ResponseUtility;
+//import com.bridgelabz.fundoo.utility.ResponseUtility;
 
 @RestController
 @RequestMapping("/storage")

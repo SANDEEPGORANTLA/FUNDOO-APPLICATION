@@ -1,6 +1,6 @@
 package com.bridgelabz.fundoo.utility;
 
-import com.bridgelabz.fundoo.model.Response;
+import com.bridgelabz.fundoo.utility.Response;
 
 public class ResponseUtility 
 {
