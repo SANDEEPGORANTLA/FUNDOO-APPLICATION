@@ -3,7 +3,6 @@ package com.bridgelabz.fundoo.controller;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.omg.CORBA.UserException;
@@ -31,79 +30,81 @@ import com.bridgelabz.fundoo.services.AmazonClient;
 import com.bridgelabz.fundoo.services.UserServiceImpl;
 
 @RestController
-@RequestMapping(value="/user")
-@CrossOrigin(origins="*",allowedHeaders="*",exposedHeaders= {"jwtToken"})
-public class UserController 
-{
-	
+@RequestMapping(value = "/user")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = { "jwtToken" })
+public class UserController {
+
 	private AmazonClient amazonClient;
 
 	@Autowired
-	public UserController(AmazonClient amazonClient)
-	{
-	this.amazonClient=amazonClient;
+	public UserController(AmazonClient amazonClient) {
+		this.amazonClient = amazonClient;
 	}
-	
+
 	@Autowired
 	private UserServiceImpl userServiceImpl;
+
 //************************ registration ***************************************************************//
-	
+
 	@PostMapping("/register")
-	public ResponseEntity<Response> userRegister(@RequestBody UserRegistrationDto userRegistrationDto, HttpServletRequest request) throws UserException, UnsupportedEncodingException 
-	{
+	public ResponseEntity<Response> userRegister(@RequestBody UserRegistrationDto userRegistrationDto,
+			HttpServletRequest request) throws UserException, UnsupportedEncodingException {
 		Response response = userServiceImpl.register(userRegistrationDto, request);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+
 //************************ token-activation ***************************************************************//
 	@GetMapping("/activation/{token}")
-	public ResponseEntity<Response> validatResponse(@RequestHeader String token) throws UserException, UnsupportedEncodingException 
-	{
-		Response response=userServiceImpl.validateMail(token);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);	
+	public ResponseEntity<Response> validatResponse(@RequestHeader String token)
+			throws UserException, UnsupportedEncodingException {
+		Response response = userServiceImpl.validateMail(token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+
 //*********************** login *************************************************************************//	
 	@PostMapping("/login")
-	public ResponseEntity<Response> userLogin(@RequestBody UserLoginDto userLoginDto, HttpServletResponse resopnse) 	throws UserException, UnsupportedEncodingException 
-	{
-		
-		Response response = userServiceImpl.login(userLoginDto,resopnse);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> userLogin(@RequestBody UserLoginDto userLoginDto, HttpServletResponse resopnse)
+			throws UserException, UnsupportedEncodingException {
+
+		Response response = userServiceImpl.login(userLoginDto, resopnse);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+
 //*********************************************************************************************************//
 	@PutMapping("/forgotpassword")
-	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword)throws UserException, UnsupportedEncodingException 
-	{
+	public ResponseEntity<Response> forgetPassword(@RequestBody UserForgetPasswordDto userForgetpassword)
+			throws UserException, UnsupportedEncodingException {
 		Response response = userServiceImpl.forget(userForgetpassword);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
-	
+
 //************************ forget-password ****************************************************************//	
 	@PutMapping("/setPassword")
-	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,@RequestHeader String token)throws UserException, UnsupportedEncodingException 
-	{
-		Response response=userServiceImpl.setPassword(userSetPasswordDto, token);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
-	}	
+	public ResponseEntity<Response> setPassword(@RequestBody UserSetPasswordDto userSetPasswordDto,
+			@RequestHeader String token) throws UserException, UnsupportedEncodingException {
+		Response response = userServiceImpl.setPassword(userSetPasswordDto, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
 
 //*********************************************************************************************************//
 	@PostMapping("/uploadFile")
-	public ResponseEntity<Response>uploadFile(@RequestPart(value="file")MultipartFile file,@RequestHeader String token)throws IOException
-	{
-	Response response=amazonClient.uploadFile(file,token);
-	return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> uploadFile(@RequestPart(value = "file") MultipartFile file,
+			@RequestHeader String token) throws IOException {
+		Response response = amazonClient.uploadFile(file, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteFile")
-	public ResponseEntity<Response> deleteFile(@RequestHeader String fileName,@RequestHeader String token) throws IOException
-	{
-	Response response=amazonClient.deleteFileFromS3Bucket(fileName,token);
-	return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> deleteFile(@RequestHeader String fileName, @RequestHeader String token)
+			throws IOException {
+		Response response = amazonClient.deleteFileFromS3Bucket(fileName, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+
 	@GetMapping("/get")
-	public URL getPropic(@RequestParam String token) 
-	{
-		URL response=amazonClient.getPropic(token);
+	public URL getPropic(@RequestParam String token) {
+		URL response = amazonClient.getPropic(token);
 		return response;
-		
+
 	}
 }

@@ -15,38 +15,35 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.bridgelabz.fundoo.utility.Response;
 import com.bridgelabz.fundoo.services.AmazonClient;
-//import com.bridgelabz.fundoo.utility.ResponseUtility;
 
 @RestController
 @RequestMapping("/storage")
-public class BucketController 
-{	
+public class BucketController {
 	private AmazonClient amazonClient;
 
 	@Autowired
-	public BucketController(AmazonClient amazonClient)
-	{
-	this.amazonClient=amazonClient;
+	public BucketController(AmazonClient amazonClient) {
+		this.amazonClient = amazonClient;
 	}
 
 	@PostMapping("/uploadFile")
-	public ResponseEntity<Response>uploadFile(@RequestPart(value="file")MultipartFile file,@RequestHeader String token)throws IOException
-	{
-	Response response=amazonClient.uploadFile(file,token);
-	return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> uploadFile(@RequestPart(value = "file") MultipartFile file,
+			@RequestHeader String token) throws IOException {
+		Response response = amazonClient.uploadFile(file, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/deleteFile")
-	public ResponseEntity<Response> deleteFile(@RequestHeader String fileName,@RequestHeader String token) throws IOException
-	{
-	Response response=amazonClient.deleteFileFromS3Bucket(fileName,token);
-	return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> deleteFile(@RequestHeader String fileName, @RequestHeader String token)
+			throws IOException {
+		Response response = amazonClient.deleteFileFromS3Bucket(fileName, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
+
 	@GetMapping("/get")
-	public URL getPropic(@RequestHeader String token) 
-	{
-		URL response=amazonClient.getPropic(token);
+	public URL getPropic(@RequestHeader String token) {
+		URL response = amazonClient.getPropic(token);
 		return response;
-		
+
 	}
 }

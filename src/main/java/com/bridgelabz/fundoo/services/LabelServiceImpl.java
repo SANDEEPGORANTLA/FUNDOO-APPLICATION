@@ -24,10 +24,9 @@ public class LabelServiceImpl implements LabelServiceInterface {
 	private ModelMapper modelMapper;
 	@Autowired
 	private UserRepositoryInterface userRepositoryInterface;
-	
 
 //********************************  create  ******************************************************************//
-	
+
 	@Override
 	public Response create(LabelDto labelDto, String token) {
 		String id = TokenUtility.verifyToken(token);
@@ -37,22 +36,19 @@ public class LabelServiceImpl implements LabelServiceInterface {
 			label.setUserId(id);
 			label.setCreateTime(Utility.todayDate());
 			label.setUpdateTime(Utility.todayDate());
-			label=labelRepositoryInterface.save(label);
+			label = labelRepositoryInterface.save(label);
 
 			List<Label> labels = user.get().getLabels();
-			if(!(labels==null))
-			{
+			if (!(labels == null)) {
 				labels.add(label);
 				user.get().setLabels(labels);
-			}
-			else
-			{
-				labels=new ArrayList<Label>();
+			} else {
+				labels = new ArrayList<Label>();
 				labels.add(label);
 				user.get().setLabels(labels);
 			}
 			userRepositoryInterface.save(user.get());
-			
+
 			Response response = ResponseUtility.getResponse(200, token, "Label is created Sucessfully");
 			return response;
 		}
@@ -60,14 +56,14 @@ public class LabelServiceImpl implements LabelServiceInterface {
 		return response;
 	}
 //******************************* update *********************************************************************//
-	
+
 	@Override
 	public Response update(LabelDto labelDto, String token, String labelId) {
 		String id = TokenUtility.verifyToken(token);
 		User user = userRepositoryInterface.findById(id).get();
 		Optional<Label> label = labelRepositoryInterface.findByLabelId(labelId);
 		if (label.isPresent()) {
-		
+
 			label.get().setLabelName(labelDto.getLabelName());
 			label.get().setUpdateTime(Utility.todayDate());
 			labelRepositoryInterface.save(label.get());
@@ -77,7 +73,6 @@ public class LabelServiceImpl implements LabelServiceInterface {
 		Response response = ResponseUtility.getResponse(204, "Label is not updated");
 		return response;
 	}
-
 //****************************** delete **********************************************************************//
 	@SuppressWarnings("unused")
 	@Override
@@ -96,12 +91,11 @@ public class LabelServiceImpl implements LabelServiceInterface {
 	}
 //******************************* retrieve *******************************************************************//
 	@Override
-	public List<Label> retrive(String token)
-	{
-	String id=TokenUtility.verifyToken(token);
-	List<Label> lable= labelRepositoryInterface.findByUserId(id);
-	System.out.println(id);	
-	//lable=labelRepositoryInterface.findAll();
-	return lable;
+	public List<Label> retrive(String token) {
+		String id = TokenUtility.verifyToken(token);
+		List<Label> lable = labelRepositoryInterface.findByUserId(id);
+		System.out.println(id);
+		// lable=labelRepositoryInterface.findAll();
+		return lable;
 	}
 }

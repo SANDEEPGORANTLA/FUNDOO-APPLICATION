@@ -10,27 +10,25 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
-public class ApplactionConfigure 
-{
+public class ApplactionConfigure {
 	@Bean
-	public ModelMapper getModelMapper() 
-	{
+	public ModelMapper getModelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		return modelMapper;
 	}
+
 	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() 
-	{
+	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 	@Bean(destroyMethod = "close")
-	  public RestHighLevelClient client() 
-	  {
-	      RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost",9200,"http")).setMaxRetryTimeoutMillis(90000000));
-	      return client;
+	public RestHighLevelClient client() {
+		RestHighLevelClient client = new RestHighLevelClient(
+				RestClient.builder(new HttpHost("localhost", 9200, "http")).setMaxRetryTimeoutMillis(90000000));
+		return client;
 
-	  }
+	}
 
-	
 }

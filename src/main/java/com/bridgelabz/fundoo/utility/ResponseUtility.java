@@ -2,18 +2,15 @@ package com.bridgelabz.fundoo.utility;
 
 import com.bridgelabz.fundoo.utility.Response;
 
-public class ResponseUtility 
-{
-	public static  Response getResponse(int statusCode, String statusMessage) 
-	{
+public class ResponseUtility {
+	public static Response getResponse(int statusCode, String statusMessage) {
 		Response respone = new Response();
 		respone.setStatusCode(statusCode);
 		respone.setStatusMessage(statusMessage);
 		return respone;
 	}
 
-	public static Response getResponse(int statusCode, String token, String statusMessage) 
-	{
+	public static Response getResponse(int statusCode, String token, String statusMessage) {
 		Response respone = new Response();
 		respone.setStatusCode(statusCode);
 		respone.setToken(token);

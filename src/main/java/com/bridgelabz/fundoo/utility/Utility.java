@@ -5,10 +5,8 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Utility 
-{
-	public static String todayDate() 
-	{
+public class Utility {
+	public static String todayDate() {
 		LocalDateTime now = LocalDateTime.now();
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		String simpledateformatDateTime = now.format(format);

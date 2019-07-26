@@ -8,16 +8,15 @@ import com.bridgelabz.fundoo.dto.UserLoginDto;
 import com.bridgelabz.fundoo.model.User;
 
 @Component
-public class EncryptUtil 
-{
+public class EncryptUtil {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	public String encryptPassword(String  password)
-	{
-		return passwordEncoder.encode(password);	
+
+	public String encryptPassword(String password) {
+		return passwordEncoder.encode(password);
 	}
-	public boolean ispassword(UserLoginDto loginDto,User user)
-	{
-		return passwordEncoder.matches(loginDto.getPassword(),user.getPassword());	
+
+	public boolean ispassword(UserLoginDto loginDto, User user) {
+		return passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
 	}
 }

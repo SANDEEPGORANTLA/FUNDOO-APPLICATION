@@ -23,39 +23,38 @@ import com.bridgelabz.fundoo.services.LabelServiceImpl;
 
 @RestController
 @RequestMapping("/label")
-@CrossOrigin(origins="*", allowedHeaders="*",exposedHeaders= {"jwtToken"})
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = { "jwtToken" })
 public class LabelController {
 	@Autowired
 	private LabelServiceImpl labelServiceImpl;
 
 //***************************** create-label ****************************************************************************************************************//
 	@PostMapping("/create")
-	public ResponseEntity<Response> create(@RequestBody LabelDto labelDto, @RequestHeader String token)  throws UserException,UnsupportedEncodingException
-	{
+	public ResponseEntity<Response> create(@RequestBody LabelDto labelDto, @RequestHeader String token)
+			throws UserException, UnsupportedEncodingException {
 		Response response = labelServiceImpl.create(labelDto, token);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 //**************************** update-label *****************************************************************************************************************//
 	@PutMapping("/update")
-	public ResponseEntity<Response> update(@RequestBody LabelDto labelDto, @RequestHeader String token, @RequestParam String labelId)  throws UserException,UnsupportedEncodingException
-	{
+	public ResponseEntity<Response> update(@RequestBody LabelDto labelDto, @RequestHeader String token,
+			@RequestParam String labelId) throws UserException, UnsupportedEncodingException {
 		Response response = labelServiceImpl.update(labelDto, token, labelId);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 //**************************** delete-label *****************************************************************************************************************//
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> delete(@RequestHeader String token, @RequestParam String labelId)  throws UserException,UnsupportedEncodingException
-	{
+	public ResponseEntity<Response> delete(@RequestHeader String token, @RequestParam String labelId)
+			throws UserException, UnsupportedEncodingException {
 		Response response = labelServiceImpl.delete(token, labelId);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 //**************************** get-label  ********************************************************************************************************************//
 	@GetMapping("/retrive")
-	public List<Label> retrive(@RequestHeader String token) throws UserException,UnsupportedEncodingException
-	{
+	public List<Label> retrive(@RequestHeader String token) throws UserException, UnsupportedEncodingException {
 		List<Label> list = labelServiceImpl.retrive(token);
 		return list;
 	}

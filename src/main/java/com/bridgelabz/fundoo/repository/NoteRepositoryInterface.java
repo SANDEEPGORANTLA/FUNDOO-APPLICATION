@@ -7,11 +7,11 @@ import org.springframework.stereotype.Repository;
 import com.bridgelabz.fundoo.model.Note;
 
 @Repository
-public interface NoteRepositoryInterface extends MongoRepository<Note, String> 
-{
+public interface NoteRepositoryInterface extends MongoRepository<Note, String> {
 	Optional<Note> findByNoteIdAndUserId(String noteId, String userId);
+
 	Optional<Note> findByNoteId(String noteId);
+
 	List<Note> findByUserId(String userId);
-	
-	
+
 }

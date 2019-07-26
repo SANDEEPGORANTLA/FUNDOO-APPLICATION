@@ -3,12 +3,9 @@ package com.bridgelabz.fundoo.services;
 import java.io.IOException;
 import java.util.List;
 
-import org.elasticsearch.action.search.SearchResponse;
-
 import com.bridgelabz.fundoo.model.Note;
 
-public interface ElasticSearchServiceIntrface 
-{
+public interface ElasticSearchServiceIntrface {
 
 	String createNote(Note note) throws IOException;
 
@@ -18,9 +15,8 @@ public interface ElasticSearchServiceIntrface
 
 	String upDateNote(Note note) throws Exception;
 
-	List<Note> searchByTitle(String title, String userId)throws Exception;
-	
-	public List<Note> searchNoteByText(String findString,String token) throws IOException;
+	List<Note> searchByTitle(String title, String userId) throws Exception;
 
-//	List<Note> getSearchResult(SearchResponse response);
+	public List<Note> searchNoteByText(String findString, String token) throws IOException;
+
 }

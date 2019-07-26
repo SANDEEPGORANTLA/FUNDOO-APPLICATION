@@ -1,27 +1,22 @@
 package com.bridgelabz.fundoo.dto;
 
-public class UserSetPasswordDto 
-{
+public class UserSetPasswordDto {
 	private String password;
 	private String conformPassword;
 
-	public String getpassword() 
-	{
+	public String getpassword() {
 		return password;
 	}
 
-	public void setpassword(String password) 
-	{
+	public void setpassword(String password) {
 		this.password = password;
 	}
 
-	public String getConformPassword() 
-	{
+	public String getConformPassword() {
 		return conformPassword;
 	}
 
-	public void setConformPassword(String conformPassword) 
-	{
+	public void setConformPassword(String conformPassword) {
 		this.conformPassword = conformPassword;
 	}
 

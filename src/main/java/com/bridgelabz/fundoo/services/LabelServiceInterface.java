@@ -7,10 +7,12 @@ import com.bridgelabz.fundoo.model.Label;
 import com.bridgelabz.fundoo.utility.Response;
 
 @Service
-public interface LabelServiceInterface 
-{
-	 Response create(LabelDto labelDto, String token);
-	 Response update(LabelDto labelDto,String token, String labelId);
-	 Response delete(String token, String labelId);
-	 List<Label> retrive(String token);
+public interface LabelServiceInterface {
+	Response create(LabelDto labelDto, String token);
+
+	Response update(LabelDto labelDto, String token, String labelId);
+
+	Response delete(String token, String labelId);
+
+	List<Label> retrive(String token);
 }

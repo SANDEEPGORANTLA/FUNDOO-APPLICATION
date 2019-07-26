@@ -1,6 +1,5 @@
 package com.bridgelabz.fundoo.model;
 
-
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -23,12 +22,11 @@ public class Note {
 
 	@DBRef
 	private List<Label> labels;
-	
-	public Note()
-	{
-		
+
+	public Note() {
+
 	}
-	
+
 	public Note(String noteId, String userId, String title, String description, String createTime, String updateTime,
 			boolean trash, boolean archive, boolean pin, String color, List<Label> labels) {
 		super();
@@ -44,8 +42,6 @@ public class Note {
 		this.color = color;
 		this.labels = labels;
 	}
-
-
 
 	public String getNoteId() {
 		return noteId;
@@ -118,7 +114,7 @@ public class Note {
 	public void setPin(boolean Pin) {
 		this.Pin = Pin;
 	}
-	
+
 	public List<Label> getLabels() {
 		return labels;
 	}
@@ -126,8 +122,7 @@ public class Note {
 	public void setLabels(List<Label> labels) {
 		this.labels = labels;
 	}
-	
-	
+
 	public String getColor() {
 		return color;
 	}
@@ -154,7 +149,5 @@ public class Note {
 				+ ", createTime=" + createTime + ", updateTime=" + updateTime + ", trash=" + trash + ", archive="
 				+ archive + ", Pin=" + Pin + ", color=" + color + ", labels=" + labels + "]";
 	}
-
-	
 
 }

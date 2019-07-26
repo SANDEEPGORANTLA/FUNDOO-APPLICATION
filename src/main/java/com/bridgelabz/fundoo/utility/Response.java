@@ -1,59 +1,55 @@
 package com.bridgelabz.fundoo.utility;
 
-public class Response 
-{
-	
+public class Response {
+
 	int statusCode;
 	String token;
 	String statusMessage;
 
-	public Response() 
-	{
+	public Response() {
 
 	}
-	public Response(int statusCode, String token, String statusMessage) 
-	{
+
+	public Response(int statusCode, String token, String statusMessage) {
 		super();
 		this.statusCode = statusCode;
 		this.token = token;
 		this.statusMessage = statusMessage;
 	}
-	public Response(int statusCode, String token) 
-	{
+
+	public Response(int statusCode, String token) {
 		super();
 		this.statusCode = statusCode;
 		this.token = token;
 	}
-	
-	
-	public int getStatusCode() 
-	{
+
+	public int getStatusCode() {
 		return statusCode;
 	}
-	public void setStatusCode(int statusCode) 
-	{
+
+	public void setStatusCode(int statusCode) {
 		this.statusCode = statusCode;
 	}
-	public String getToken() 
-	{
+
+	public String getToken() {
 		return token;
 	}
-	public void setToken(String token) 
-	{
+
+	public void setToken(String token) {
 		this.token = token;
 	}
 
-	public String getStatusMessage() 
-	{
+	public String getStatusMessage() {
 		return statusMessage;
 	}
-	public void setStatusMessage(String statusMessage) 
-	{
+
+	public void setStatusMessage(String statusMessage) {
 		this.statusMessage = statusMessage;
 	}
+
 	@Override
 	public String toString() {
-		return "Response [statusCode=" + statusCode + ", token=" + token + ", "
-				+ "statusMessage=" + statusMessage + "]";
+		return "Response [statusCode=" + statusCode + ", token=" + token + ", " + "statusMessage=" + statusMessage
+				+ "]";
 	}
 }

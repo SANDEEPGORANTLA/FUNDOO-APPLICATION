@@ -20,8 +20,7 @@ import com.bridgelabz.fundoo.utility.TokenUtility;
 import com.bridgelabz.fundoo.utility.Utility;
 
 @Service("UserServiceInterface")
-public class UserServiceImpl implements UserServiceInterface 
-{
+public class UserServiceImpl implements UserServiceInterface {
 	@Autowired
 	private UserRepositoryInterface userRepository;
 	@Autowired
@@ -32,16 +31,12 @@ public class UserServiceImpl implements UserServiceInterface
 	private EncryptUtil encryptUtil;
 
 //**************************** registration *******************************************************//
-	public Response register(UserRegistrationDto userRegistrationDto, HttpServletRequest request) 
-	{
+	public Response register(UserRegistrationDto userRegistrationDto, HttpServletRequest request) {
 		boolean User = userRepository.findByEmailId(userRegistrationDto.getEmailId()).isPresent();
-		if (User) 
-		{
+		if (User) {
 			Response respone = ResponseUtility.getResponse(404, "user exites");
 			return respone;
-		} 
-		else 
-		{
+		} else {
 			User user = modelMapper.map(userRegistrationDto, User.class);
 			user.setPassword(encryptUtil.encryptPassword(user.getPassword()));
 			user.setRegisterStamp(Utility.todayDate());
@@ -53,10 +48,8 @@ public class UserServiceImpl implements UserServiceInterface
 			return response;
 		}
 	}
-
 //*************************************************************************************************//
-	private void registerActivationMail(User user, HttpServletRequest request) 
-	{
+	private void registerActivationMail(User user, HttpServletRequest request) {
 		String token = TokenUtility.generateToken(user.getUserId());
 		StringBuffer requestUrl = request.getRequestURL();
 		System.out.println(requestUrl);
@@ -64,66 +57,52 @@ public class UserServiceImpl implements UserServiceInterface
 		System.out.println(url);
 		emailSenderUtil.mailSender(user.getEmailId(), "user.email.subject", url);
 	}
-
 //**************************** login **************************************************************//
-	public Response login(UserLoginDto userLoginDto, HttpServletResponse resopnse) 
-	{
+	public Response login(UserLoginDto userLoginDto, HttpServletResponse resopnse) {
 		boolean email = userRepository.findByEmailId(userLoginDto.getEmailId()).isPresent();
-		if (!email) 
-		{	
+		if (!email) {
 			Response response1 = ResponseUtility.getResponse(404, "User-Email-Invaild");
 			return response1;
 		}
 		User user = userRepository.findByEmailId(userLoginDto.getEmailId()).get();
 		boolean Password = encryptUtil.ispassword(userLoginDto, user);
-		if (!Password) 
-		{	
+		if (!Password) {
 			Response response = ResponseUtility.getResponse(404, "User-Login-Failed");
 			return response;
 		}
-		if (!(user.isVerified())) 
-		{	
+		if (!(user.isVerified())) {
 			Response response = ResponseUtility.getResponse(404, "user login failed");
 			return response;
-		}
-		else
-		{
-		user.setUpdateStamp(Utility.todayDate());
-		userRepository.save(user);
-		String token = TokenUtility.generateToken(user.getUserId());
-		user.setToken(token);
-		Response response = ResponseUtility.getResponse(400, token, "login is Sucessfull");
-		return response;
+		} else {
+			user.setUpdateStamp(Utility.todayDate());
+			userRepository.save(user);
+			String token = TokenUtility.generateToken(user.getUserId());
+			user.setToken(token);
+			Response response = ResponseUtility.getResponse(400, token, "login is Sucessfull");
+			return response;
 		}
 	}
-
 //*************************** forget-password *****************************************************//
-	public Response forget(UserForgetPasswordDto userForgetPasswordDto) 
-	{
+	public Response forget(UserForgetPasswordDto userForgetPasswordDto) {
 		String email = userForgetPasswordDto.getEmailId();
 		boolean forget = userRepository.findByEmailId(email).isPresent();
 		Response response = null;
-		if (!forget) 
-		{
+		if (!forget) {
 			response = ResponseUtility.getResponse(404, "email id is not valid");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			User user = userRepository.findByEmailId(userForgetPasswordDto.getEmailId()).get();
 			String token = TokenUtility.generateToken(user.getUserId());
 			emailSenderUtil.mailSender(user.getEmailId(), "user.email.subject",
-					"http://localhost:4200/setpassword/"+token);
+					"http://localhost:4200/setpassword/" + token);
 			user.setUpdateStamp(Utility.todayDate());
 			userRepository.save(user);
 			response = ResponseUtility.getResponse(400, token, "email id is not valid");
 			return response;
 		}
 	}
-
 //*****************************validate email *****************************************************//
-	public Response validateMail(String token) 
-	{
+	public Response validateMail(String token) {
 		User user = new User();
 		String id = TokenUtility.verifyToken(token);
 		boolean check = userRepository.findByEmailId(id).isPresent();
@@ -131,28 +110,21 @@ public class UserServiceImpl implements UserServiceInterface
 			user.setVerified(true);
 			Response response = ResponseUtility.getResponse(400, token, "Email is valid sucessfully");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(404, token, "User is not valid");
 			return response;
 		}
 	}
-
 //*************************** reset password ******************************************************//
-	public Response setPassword(UserSetPasswordDto userSetPasswordDto, String token) 
-	{
+	public Response setPassword(UserSetPasswordDto userSetPasswordDto, String token) {
 		String id = TokenUtility.verifyToken(token);
 		User user = userRepository.findById(id).get();
 		String email = user.getEmailId();
 		boolean isUser = userRepository.findByEmailId(email).isPresent();
-		if (!isUser) 
-		{
+		if (!isUser) {
 			Response response = ResponseUtility.getResponse(404, token, "user email invalid");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			User userId = userRepository.findByEmailId(email).get();
 			userId.setPassword(encryptUtil.encryptPassword(userSetPasswordDto.getpassword()));
 			userId.setUpdateStamp(Utility.todayDate());
@@ -161,11 +133,9 @@ public class UserServiceImpl implements UserServiceInterface
 			return response;
 		}
 	}
-
 //*************************************************************************************************//
 	@Override
-	public List<User> getAll() 
-	{
+	public List<User> getAll() {
 		return userRepository.findAll();
 	}
 }

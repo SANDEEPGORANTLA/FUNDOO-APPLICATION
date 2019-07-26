@@ -26,8 +26,7 @@ import com.bridgelabz.fundoo.utility.ResponseUtility;
 import com.bridgelabz.fundoo.utility.TokenUtility;
 
 @Service
-public class AmazonClient 
-{
+public class AmazonClient {
 
 	@Autowired
 	UserRepositoryInterface userRepositoryInterface;
@@ -48,14 +47,12 @@ public class AmazonClient
 
 	@SuppressWarnings("deprecation")
 	@PostConstruct
-	private void initializeAmazon() 
-	{
+	private void initializeAmazon() {
 		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 		this.s3client = new AmazonS3Client(credentials);
 	}
 
-	private File convertMultiPartToFIle(MultipartFile file) throws IOException 
-	{
+	private File convertMultiPartToFIle(MultipartFile file) throws IOException {
 		File convertFile = new File(file.getOriginalFilename());
 		FileOutputStream fos = new FileOutputStream(convertFile);
 		fos.write(file.getBytes());
@@ -63,80 +60,70 @@ public class AmazonClient
 		return convertFile;
 	}
 
-	private String generateFileName(MultipartFile multipart) 
-	{
+	private String generateFileName(MultipartFile multipart) {
 		return new Date().getTime() + "-" + multipart.getOriginalFilename().replace("", "-");
 	}
 
-	private void uploadFileToS3Bucket(String fileName, File file) 
-	{
+	private void uploadFileToS3Bucket(String fileName, File file) {
 		s3client.putObject(
 				new PutObjectRequest(bucketName, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
 	}
 
-	public Response uploadFile(MultipartFile multipart, String token) throws IOException 
-	{
+	public Response uploadFile(MultipartFile multipart, String token) throws IOException {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> optiUser = userRepositoryInterface.findByUserId(id);
-		if (optiUser.isPresent()) 
-		{
+		if (optiUser.isPresent()) {
 			User user = optiUser.get();
 			String fileUrl = "";
 			File file = convertMultiPartToFIle(multipart);
 			String fileName = generateFileName(multipart);
-			fileUrl = "https://"+ bucketName + ".s3.ap-south-1.amazonaws.com/" + fileName;
+			fileUrl = "https://" + bucketName + ".s3.ap-south-1.amazonaws.com/" + fileName;
 			uploadFileToS3Bucket(fileName, file);
 			file.delete();
 			user.setImage(fileUrl);
 			userRepositoryInterface.save(user);
 			Response response = ResponseUtility.getResponse(201, token, "profile pic is successfully updated");
 			return response;
-		} 
-		else 
-		{
+		} else {
 			Response response = ResponseUtility.getResponse(404, "0", "profile pic is updated Fail");
 			return response;
 		}
 	}
-	public Response deleteFileFromS3Bucket(String fileName,String token) throws IOException
-	{
-		String id=TokenUtility.verifyToken(token);
-		Optional<User> optiUser=userRepositoryInterface.findByUserId(id);
-		if(optiUser.isPresent())
-		{
-			User user=optiUser.get();
+
+	public Response deleteFileFromS3Bucket(String fileName, String token) throws IOException {
+		String id = TokenUtility.verifyToken(token);
+		Optional<User> optiUser = userRepositoryInterface.findByUserId(id);
+		if (optiUser.isPresent()) {
+			User user = optiUser.get();
 			s3client.deleteObject(new DeleteObjectRequest(bucketName, fileName));
 			user.setImage(null);
 			userRepositoryInterface.save(user);
-			Response response=ResponseUtility.getResponse(201,token,"profile pic is deleated successfully");
+			Response response = ResponseUtility.getResponse(201, token, "profile pic is deleated successfully");
 			return response;
-		}
-		else
-		{
-			Response response=ResponseUtility.getResponse(404,"0","profile pic is not deleated successfully");
+		} else {
+			Response response = ResponseUtility.getResponse(404, "0", "profile pic is not deleated successfully");
 			return response;
 		}
 	}
+
 	public URL getPropic(String token) {
-	String id=TokenUtility.verifyToken(token);
-	boolean isUser=userRepositoryInterface.findById(id).isPresent();
-	if(!isUser) {
-	// response.sendResponse(204,"profilePic is retrived successfully","");
-	// return response;
-	System.out.println("propic retrival failed");
-	}
-	// User user=new User();
-	User user=userRepositoryInterface.findById(id).get();
-	String image=user.getImage();
-	URL url=null;
-	try {
-	url=new URL(image);
-	} catch (MalformedURLException e) {
-	e.printStackTrace();
-	}
-	return url;
+		String id = TokenUtility.verifyToken(token);
+		boolean isUser = userRepositoryInterface.findById(id).isPresent();
+		if (!isUser) {
+			// response.sendResponse(204,"profilePic is retrived successfully","");
+			// return response;
+			System.out.println("propic retrival failed");
+		}
+		// User user=new User();
+		User user = userRepositoryInterface.findById(id).get();
+		String image = user.getImage();
+		URL url = null;
+		try {
+			url = new URL(image);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return url;
 	}
 
 }
-
-

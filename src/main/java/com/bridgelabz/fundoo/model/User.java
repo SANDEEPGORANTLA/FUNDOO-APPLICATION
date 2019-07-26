@@ -6,8 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class User 
-{
+public class User {
 	@Id
 	private String userId;
 	private String firstName;
@@ -20,99 +19,96 @@ public class User
 	private boolean isVarified;
 	private String token;
 	private String image;
-	
+
 	@DBRef
 	private List<Note> notes;
 	@DBRef
 	private List<Label> labels;
-	
-	
-	public User() 
-	{
+
+	public User() {
 
 	}
 
-	public String getUserId() 
-	{
+	public String getUserId() {
 		return userId;
 	}
-	public void setUserId(String userId) 
-	{
+
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public String getFirstName() 
-	{
+
+	public String getFirstName() {
 		return firstName;
 	}
-	public void setFirstName(String firstName) 
-	{
+
+	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-	public String getLastName() 
-	{
+
+	public String getLastName() {
 		return lastName;
 	}
-	public void setLastName(String lastName) 
-	{
+
+	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public String getEmailId() 
-	{
+
+	public String getEmailId() {
 		return emailId;
 	}
-	public void setEmailId(String emailId) 
-	{
+
+	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
-	public String getPhoneNumber() 
-	{
+
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
-	public void setPhoneNumber(String phoneNumber) 
-	{
+
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	public String getPassword() 
-	{
+
+	public String getPassword() {
 		return password;
 	}
-	public void setPassword(String password) 
-	{
+
+	public void setPassword(String password) {
 		this.password = password;
 	}
-	public String getRegisterStamp() 
-	{
+
+	public String getRegisterStamp() {
 		return registerStamp;
 	}
-	public void setRegisterStamp(String registerStamp) 
-	{
+
+	public void setRegisterStamp(String registerStamp) {
 		this.registerStamp = registerStamp;
 	}
-	public String getUpdateStamp() 
-	{
+
+	public String getUpdateStamp() {
 		return UpdateStamp;
 	}
-	public void setUpdateStamp(String updateStamp) 
-	{
+
+	public void setUpdateStamp(String updateStamp) {
 		UpdateStamp = updateStamp;
 	}
-	public boolean isVerified() 
-	{
+
+	public boolean isVerified() {
 		return isVarified;
 	}
-	public void setVerified(boolean isVerified) 
-	{
+
+	public void setVerified(boolean isVerified) {
 		this.isVarified = isVerified;
 	}
-	public String getToken() 
-	{
+
+	public String getToken() {
 		return token;
 	}
-	public void setToken(String token) 
-	{
+
+	public void setToken(String token) {
 		this.token = token;
 	}
-	
+
 	public List<Note> getNotes() {
 		return notes;
 	}
@@ -122,7 +118,7 @@ public class User
 	}
 
 	public User get() {
-		
+
 		return null;
 	}
 
@@ -141,7 +137,7 @@ public class User
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", emailId=" + emailId
@@ -149,6 +145,5 @@ public class User
 				+ ", UpdateStamp=" + UpdateStamp + ", isVarified=" + isVarified + ", token=" + token + ", image="
 				+ image + ", notes=" + notes + ", labels=" + labels + "]";
 	}
-	
-	
+
 }
